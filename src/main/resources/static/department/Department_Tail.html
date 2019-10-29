@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/info-mgt.css" />
+    <link rel="stylesheet" href="../css/bootstrap-select.css" />
+    <style>
+        .tree_left {
+            box-sizing: border-box;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+            .tree_left h6, .tree_right h6 {
+                line-height: 30px;
+                font-weight: bold;
+                padding-left: 6px;
+                color: #000;
+                font-size: 14px;
+            }
+
+        .tree_left_top {
+            margin: 10px 0 0 0;
+        }
+
+        .tree_input input {
+            border: 1px #ccc solid;
+            margin: 3px 0 0 0px;
+            border-radius: 4px;
+        }
+        .bot_btn{width: 150px;height: 30px;margin: 20px 0 0 34%}
+        .bot_btn .btn{width: 60px;height: 30px;background-color: #68b86c;border: none;border-radius: 6px;color: #fff;margin-right: 15px}
+        .bot_btn .btn1{background-color: #c1d3de;border: none;border-radius: 6px;color: #000;margin-right: 0}
+    </style>
+</head>
+<body>
+    <div class="tree_left l_left">
+        <div class="tree_left_top">
+            <div class="person_Box" style="margin:0 0 10px 20px">
+                <label style="width:50px;font-size:13px;line-height:34px">部门名称：</label><input type="text" style="margin:0 10px;width:70%;border-radius:4px;height:34px;line-height:34px;border:1px #ccc solid" id="Name" />
+            </div>
+            <div class="person_Box" style="margin:0 0 10px 20px;">
+                <div style="width:70px;font-size:13px;line-height:34px;"><label>部门描述：</label></div>
+                <textarea type="text" style="margin-left:74px;font-family:'微软雅黑';margin-top:-34px;width:70%;border-radius:4px;height:100px;line-height:34px;border:1px #ccc solid;" id="descript" ></textarea>
+            </div>
+            <input type="hidden" id="departId">
+            <input type="hidden" id="departCname">
+            <div class="bot_btn" style="margin-top: 70px">
+                <button class="btn" style="cursor: pointer" onclick="RoleSave()">保存</button>
+                <button class="btn btn1" style="cursor: pointer" onclick="checkCancel()">取消</button>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/demo/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="../js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="../js/jquery.ztree.exedit-3.5.js"></script>
+<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+<script src="../i18n/app.js"></script>
+<script src="./department.js"></script>
+<script src="../js/layer_v2.1/layer/layer.js"></script>
+<script>
+    $(function () {
+
+        if(parent.operate==1){
+            //添加
+
+        }else{
+            //修改
+            $.ajax({
+                type: "post",
+                url: contextPath+"depart/findById",
+                data:{id:parent.departId},
+                dataType: 'json',
+                success: function(data){
+                    $("#Name").val(data.name);
+                    $("#descript").val(data.descript);
+                }
+
+            });
+        }
+    });
+
+    //取消
+    function checkCancel() {
+
+        parent.layer.closeAll();
+    }
+
+    function RoleSave() {
+        var dataParams = "";
+        var operate = "";
+        var name = $("#Name").val();
+        var descript = $("#descript").val();
+        if(name==''){
+            alert("必填项！");
+            return;
+        }
+        if(parent.operate==1){
+            //添加
+            dataParams={name:name,descript:descript};
+            operate = "depart/save";
+        }else{
+            //修改
+            dataParams={id:parent.departId,name:name,descript:descript};
+            operate = "depart/update";
+        }
+       $.ajax({
+            type: "post",
+            url: contextPath+operate,
+            data:dataParams,
+            dataType: 'text',
+            success: function(data){
+                if(data=="success"){
+                    parent.successAlert('保存成功!');
+                }
+            }
+
+        });
+    }
+
+</script>
+</html>

@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/info-mgt.css" />
+    <style>
+        .tree_left {
+            box-sizing: border-box;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+            .tree_left h6, .tree_right h6 {
+                line-height: 30px;
+                font-weight: bold;
+                padding-left: 6px;
+                color: #000;
+                font-size: 14px;
+            }
+
+        .tree_left_top {
+            margin: 10px 0 0 0;
+        }
+        .tabe_btn{width: 60px;height: 30px;background-color: #68b86c;border: none;border-radius: 6px;color: #fff;cursor: pointer}
+        .tree_input input {
+            border: 1px #ccc solid;
+            margin: 3px 0 0 0px;
+            border-radius: 4px;
+        }
+        .bot_btn{width: 150px;height: 30px;margin: 20px 0 0 34%}
+        .bot_btn .btn{width: 60px;height: 30px;background-color: #68b86c;border: none;border-radius: 6px;color: #fff;margin-right: 15px}
+        .bot_btn .btn1{background-color: #c1d3de;border: none;border-radius: 6px;color: #000;margin-right: 0}
+    </style>
+</head>
+<body>
+    <div class="tree_left l_left" style="padding-left: 30px">
+        <ul id="treeDemo" class="ztree">
+
+        </ul>
+        <button style="margin-left: 30px" class="tabe_btn" onclick="onCheck()">保存</button>
+    </div>
+</body>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/demo/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="../js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="../js/jquery.ztree.exedit-3.5.js"></script>
+<script src="../i18n/app.js"></script>
+<script src="../js/layer_v2.1/layer/layer.js"></script>
+<script>
+    var sendID, sendName, zTree, nodes
+    $(function () {
+        var setting = {
+            check: {
+                enable: true,
+                chkStyle: "checkbox",
+                chkboxType: { "Y" : "ps", "N" : "ps" }
+            },
+            view: {
+                dblClickExpand: false,//双击节点时，是否自动展开父节点的标识
+                showLine: true,//是否显示节点之间的连线
+                selectedMulti: false //设置是否允许同时选中多个节点
+            },
+
+            data: {
+                simpleData: {//简单数据模式
+                    enable:true,
+                    idKey: "id",
+                    pIdKey: "pId"
+                }
+            },
+            callback: {
+                beforeClick: function(treeId, treeNode) {
+                    zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                    if (treeNode.isParent) {
+                        zTree.expandNode(treeNode);//如果是父节点，则展开该节点
+                    }else{
+                        zTree.checkNode(treeNode, !treeNode.checked, true, true);//单击勾选，再次单击取消勾选
+                    }
+                }
+            }
+        };
+        $(document).ready(function(){
+            $.ajax({
+                type: "post",
+                url: contextPath+"permission/userPermission",
+                data:{id:parent.roleId},
+                dataType: 'json',
+                success: function(data) {
+                    $.fn.zTree.init($("#treeDemo"), setting, data).expandAll(true);
+                }
+
+            });
+
+        });
+    });
+    //取消
+    function checkCancel() {
+        parent.layer.closeAll();
+    }
+    //保存事件
+    function onCheck(){
+        var treeObj=$.fn.zTree.getZTreeObj("treeDemo"),
+                nodes=treeObj.getCheckedNodes(true),
+                v="";
+        var str = "";
+        for(var i=0;i<nodes.length;i++){
+            v+=nodes[i].name + ",";
+            console.log("节点id:"+nodes[i].id+"节点名称"+v); //获取选中节点的值
+            str+=nodes[i].id+",";
+        }
+        $.ajax({
+            type: "post",
+            url: contextPath+"permission/update",
+            data:{rId:parent.roleId,pId:str},
+            dataType: 'text',
+            success: function(data){
+               if(data=="success"){
+                   parent.successAlert('保存成功!');
+               }
+            }
+
+        });
+
+
+    }
+    function RoleSave() {
+        var dataParams = "";
+        if(parent.operate==1){
+            //添加
+            dataParams={name:$("#RoleName").val(),description:$("#RoleMS").val()};
+        }else{
+            //修改
+            dataParams={id:parent.roleId,name:$("#RoleName").val(),description:$("#RoleMS").val()};
+        }
+       $.ajax({
+            type: "post",
+            url: contextPath+"role/save",
+            data:dataParams,
+            dataType: 'text',
+            success: function(data){
+                if(data=="success"){
+                    parent.successAlert('保存成功!');
+                }
+            }
+
+        });
+    }
+
+    //DOM树初始化setting设置
+    var setting = {
+        check: {
+            enable: true
+        },
+        data: {
+            key: { name: "MODULENAME" },
+            simpleData: {
+                enable: true,
+                idKey: "MODULEID",
+                pIdKey: "pIdKey",
+                rootPId: null
+            }
+        },
+        callback: {
+            onCheck: onCheck
+        }
+    };
+
+    //加载DOM树数据方法
+    function Tree() {
+        $.ajax({
+            type: "POST",
+            url: '../RoleManage/GetFunctionModuleList',
+            dataType: "json",
+            success: function (result) {
+                if (result) {
+                    var nodes = result.data;
+                    var item = { "MODULENAME": "权限目录", "pIdKey": "-1" };
+                    nodes.push(item);
+                    $.fn.zTree.init($("#treeDemo"), setting, nodes);
+                    zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                    zTree.expandAll(true);
+                }
+            }
+        });
+    }
+   /* function onCheck(e, treeId, treeNode) {
+        nodes = zTree.getCheckedNodes()
+    };*/
+    /*function RoleSave() {
+        var RoleName = $("#RoleName").val();
+        var RoleMS = $("#RoleMS").val();
+        var v = "";
+        for (var i = 1; i < nodes.length; i++) {
+            if (i == nodes.length - 1) {
+                v += nodes[i].MODULEID;
+            } else {
+                v += nodes[i].MODULEID + ",";
+            }
+        }
+        $.ajax({
+            type: "POST",
+            url: '../RoleManage/AddPermission',
+            dataType: "json",
+            data: { ID: "-1", NAME: RoleName, VALUE: v, DESCRIBE: RoleMS },
+            success: function (result) {
+                if (result) {
+                    alert("保存成功")
+                    parent.getRoleTableData();
+                    checkCancel();
+                }
+            }
+        });
+    }
+    function checkCancel() {
+        zTree.checkAllNodes(false);
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    }*/
+</script>
+</html>

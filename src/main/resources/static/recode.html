@@ -1,0 +1,208 @@
+<!doctype html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" >
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="./css/bootstrap-table.css" rel="stylesheet" type="text/css">
+    <link href="./css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/info-mgt.css" />
+    <link rel="stylesheet" href="./DataTables-1.10.18/css/dataTables.bootstrap.css" />
+    <style type="text/css">
+        .tree_left{box-sizing:border-box;overflow-y: auto;width:76%;border: 1px #ccc solid;;border-radius: 6px;margin-right: 1%;margin-left: 90px;height: 400px;}
+        .tree_left_top{margin: 6px}
+        .tree_input input{border: 1px #ccc solid;margin:3px 0 0 10px;border-radius: 4px;
+        }
+        .layui-layer-title{background:url(./images/righttitlebig.png) repeat-x;font-weight:bold;color:#46647e; border:1px solid #c1d3de;height: 33px;line-height: 33px;}
+        .tabe_bot label,.right label{width: 70px;text-align: right;font-size: 14px;font-weight: 900;color: #46647e}
+        .l_left{float: left}
+        .tabe_bot input,.tabe_bot  select,.right input,.right input{width: 180px;height: 30px;border-radius: 6px;margin:0 20px 0 0;border: none;border: 1px #ccc solid}
+        .tabe_btn{width: 60px;height: 30px;background-color: #68b86c;border: none;border-radius: 6px;color: #fff}
+        .right{width: 39%;border: 1px #c1d3de solid;border-top: none}
+        .right textarea{width: 80%;height: 60px;resize: none;border-radius: 6px;margin-bottom: 20px;border: 1px #ccc solid}
+        .bot_btn{width: 150px;height: 30px;margin: 20px 0 0 40%}
+        .bot_btn .btn{width: 60px;height: 30px;background-color: #68b86c;border: none;border-radius: 6px;color: #fff;margin-right: 15px}
+        .bot_btn .btn1{background-color: #c1d3de;border: none;border-radius: 6px;color: #000;margin-right: 0}
+        #divMain{
+            border: red solid 1px;
+            width:800px;
+            height:700px;
+            align-content: center;
+            position: relative;
+        }
+        #divMain img{
+            width:100%;
+            height:100%;
+            top: -3%;
+            left: -40%;
+            position: absolute;
+        }
+    </style>
+    <title>定制任务</title>
+</head>
+
+<body style="width: 100%;height: 100%;">
+<div class="title"><h2>任务管理</h2></div>
+<div class="l_left" style="width: 100%;">
+<div class="query" style="height: 100px">
+    <div style="font-size: 15px;margin-left: 15px">请假流程</div>
+    <div style="margin-top: 10px">
+        <label style="margin-left: 15px">请假类型:</label>
+        <select class="select" id="leaveid" style="margin-left: 15px;">
+            <option value="0" selected>事假</option>
+            <option value="1">年假</option>
+            <option value="2">倒休</option>
+        </select>
+        <label style="margin-left: 15px">请假天数:</label>
+        <input style="width:120px;" type="text" placeholder="请输入请假天数" id="days" class="input-sm"><label style="color: red">(只能是0.5的整数倍)</label>
+        <button style="margin-left: 15px" class="tabe_btn"  onclick="apply1()">申请</button>
+    </div>
+    </div>
+    <div class="query" style="height: 100px">
+    <div style="font-size: 15px;margin-left: 15px">离职流程</div>
+    <div style="margin-top: 10px">
+        <label style="margin-left: 15px">离职人所在部门:</label>
+        <select class="select" id="department" style="margin-left: 15px;">
+            <option value="0" selected>事假</option>
+            <option value="1">年假</option>
+            <option value="1">倒休</option>
+        </select>
+        <label style="margin-left: 15px">离职人:</label>
+        <select class="select" id="assignPeople" style="margin-left: 15px">
+        </select>
+        <button style="margin-left: 15px" class="tabe_btn"  onclick="exportData()">申请</button>
+    </div>
+    </div>
+</div>
+<div id="divMain">
+    <button id="closeImg" class="closeImg" style="position: absolute;right: 10px;z-index: 200;top: 10px;width: 20px;height: 20px;">关闭</button>
+    <img src="http://localhost:8099/oa/activity/image" >
+</div>
+
+</body>
+<script type="text/javascript" src="./js/jquery.js"></script>
+<script type="text/javascript" src="./js/demo/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="./js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="./js/jquery.ztree.exedit-3.5.js"></script>
+<script type="text/javascript" src="./role/role.js"></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap-table.js"></script>
+<script type="text/javascript" src="./js/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="./js/layer_v2.1/layer/layer.js"></script>
+<script type="text/javascript" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+<script type="text/javascript" src="./i18n/app.js"></script>
+<script type="text/javascript" src="./js/page/page.js"></script>
+<script type="text/javascript" src="./DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="./DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+//        query(null);
+        $(".closeImg").click(function(){
+            $("#divMain").hide();
+        });
+
+    });
+
+    function successAlert(content){
+        layer.closeAll();
+        layer.alert(content, {
+            icon: 1,
+            title: "提示",
+            time: 1100
+        });
+        setTimeout(function(){ query(); }, 1300);
+    }
+
+    function query(currentPage){
+        if(currentPage==null || currentPage==""){
+            currentPage = 1;
+        }
+        if(currentPage<=0){
+            layer.alert("页数必须大于0！", {
+                icon: 1,
+                title: "提示",
+                time: 1800
+            });
+            return;
+        }
+        var tpage = $("#totalPage").text();
+        if(tpage!=''){
+            if(currentPage>tpage){
+                return;
+            }
+        }
+        var roleName = $("#name").val();
+        $.ajax({
+            type: "post",
+            url: contextPath+"role/findAll",
+            data:{page:"true",currentPage:currentPage,size:10,roleName:roleName},
+            dataType: 'json',
+            success: function(data){
+                var html="";
+                var content = data.content;
+                var totalPage = data.totalPage;
+                var totalCount = data.totalCount;
+                var operate = data.operate;
+                for(var i=0;i<content.length;i++){
+                    html+="<tr>";
+                    html+="<td>"+(i+1)+"</td>";
+                    html+="<td>"+content[i].cname+"</td>";
+                    html+="<td>"+content[i].description+"</td>";
+                    html+="<td>";
+                    html+=operate[i];
+
+                   /* <shiro:hasPermission name="role:update">
+                        html+="<a href='javascript:openlayer(2,"+content[i].id+")'>修改</a>&nbsp;&nbsp;";
+                    </shiro:hasPermission>
+                    html+="";
+                    <shiro:hasPermission name="role:delete">
+                        html+="<a href='javascript:del("+content[i].id+")'>删除</a>&nbsp;&nbsp;";
+                    </shiro:hasPermission>
+                    html+="";
+                    <shiro:hasPermission name="role:allotPermission">
+                        html+="<a href='javascript:openPermission("+content[i].id+")'>分配权限</a>";
+                    </shiro:hasPermission>*/
+                    html+="</td>";
+                    html+="</tr>";
+                }
+                var tbody = document.getElementById("tbody");
+                tbody.innerHTML= html;
+                //显示分页
+                fenyeInit('pageUl',currentPage,totalPage,totalCount);
+            }
+
+        });
+    }
+
+    function go(){
+        var curPage = $("#inputPage").val();
+        query(curPage);
+    }
+    var operate = '';
+    var roleId = '';
+
+
+    function change() {
+        var height01 = $(window).height();
+        $(".right").css('height', height01 - 35+"px");
+    }
+
+    function apply1(){
+        $.ajax({
+            type: "post",
+            url: contextPath+"activity/start",
+            data:{acTypeId:23},
+            dataType: 'json',
+            success: function(data){
+
+            }
+
+        });
+    }
+</script>
+
+</html>

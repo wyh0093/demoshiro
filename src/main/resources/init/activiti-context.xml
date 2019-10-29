@@ -1,0 +1,8 @@
+<!-- 创建流程引擎配置对象 -->
+<bean id="ProcessEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+    <property name="jdbcDriver" value="com.mysql.jdbc.Driver"/>
+    <property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/oa2" />
+    <property name="jdbcUsername" value="root" />
+    <property name="jdbcPassword" value="1234" />
+    <property name="databaseSchemaUpdate" value="true" />
+</bean>

@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/info-mgt.css" />
+    <link rel="stylesheet" href="../css/bootstrap-select.css" />
+    <style>
+        .tree_left {
+            box-sizing: border-box;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+            .tree_left h6, .tree_right h6 {
+                line-height: 30px;
+                font-weight: bold;
+                padding-left: 6px;
+                color: #000;
+                font-size: 14px;
+            }
+
+        .tree_left_top {
+            margin: 10px 0 0 0;
+        }
+
+        .tree_input input {
+            border: 1px #ccc solid;
+            margin: 3px 0 0 0px;
+            border-radius: 4px;
+        }
+        .bot_btn{width: 150px;height: 30px;margin: 20px 0 0 34%}
+        .bot_btn .btn{width: 60px;height: 30px;background-color: #68b86c;border: none;border-radius: 6px;color: #fff;margin-right: 15px}
+        .bot_btn .btn1{background-color: #c1d3de;border: none;border-radius: 6px;color: #000;margin-right: 0}
+    </style>
+</head>
+<body>
+    <div class="tree_left l_left">
+        <div class="tree_left_top">
+            <div class="person_Box" style="margin:0 0 10px 20px">
+                <label style="width:50px;font-size:13px;line-height:34px">用户名称：</label><input type="text" style="margin:0 10px;width:70%;border-radius:4px;height:34px;line-height:34px;border:1px #ccc solid" id="Name" />
+            </div>
+            <div class="person_Box" style="margin:0 0 10px 20px;">
+                <div style="width:70px;font-size:13px;line-height:34px;"><label>用户部门：</label></div>
+                <div style="margin-left: 75px;margin-top: -35px"><select id="depart" class="select"></select></div>
+            </div>
+            <input type="hidden" id="departId">
+            <input type="hidden" id="departCname">
+            <div class="bot_btn" style="margin-top: 70px">
+                <button class="btn" style="cursor: pointer" onclick="RoleSave()">保存</button>
+                <button class="btn btn1" style="cursor: pointer" onclick="checkCancel()">取消</button>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/demo/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="../js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="../js/jquery.ztree.exedit-3.5.js"></script>
+<script type="text/javascript" src="../js/bootstrap-select.min.js"></script>
+<script src="../i18n/app.js"></script>
+<script src="./user.js"></script>
+<script src="../js/layer_v2.1/layer/layer.js"></script>
+<script>
+    $(function () {
+
+        //alert(parent.operate);
+        //alert(parent.operate==2);
+
+        if(parent.operate==1){
+            //添加
+            allDepartment();
+
+        }else{
+            //修改
+            //alert(parent.roleId);
+            $.ajax({
+                type: "post",
+                url: contextPath+"user/findOne",
+                data:{id:parent.userId},
+                dataType: 'json',
+                success: function(data){
+                    $("#Name").val(data.cName);
+                    $("#departId").val(data.department);
+                    $("#departCname").val(data.departmentName);
+                    //初始化部门
+                    allDepartment();
+                }
+
+            });
+        }
+    });
+
+    function allDepartment(){
+        var departId = $("#departId").val();
+        var departCname = $("#departCname").val();
+        if(departId !='' && departCname!=''){
+
+        }
+        $.ajax({
+            type: "post",
+            url: contextPath+"depart/findAll",
+            data:null,
+            dataType: 'json',
+            success: function(data){
+                var html="";
+                html+="<option value=''>请选择</option>";
+                for(var i=0;i<data.length;i++){
+                    if(data[i].id==departId){
+                        html+="<option value='"+data[i].id+"' selected>"+data[i].name+"</option>";
+                    }else {
+                        html+="<option value='"+data[i].id+"'>"+data[i].name+"</option>";
+                    }
+                }
+                var depart = document.getElementById("depart");
+                depart.innerHTML= html;
+            }
+
+        });
+    }
+    //取消
+    function checkCancel() {
+
+        parent.layer.closeAll();
+    }
+
+    function RoleSave() {
+        var dataParams = "";
+        var operate = "";
+        var cname = $("#Name").val();
+        var selectId = $("#depart  option:selected").val();
+        var selectName = $("#depart  option:selected").text();
+        if(cname=='' || selectId=='' || selectName==''){
+            alert("必填项！");
+            return;
+        }
+        if(parent.operate==1){
+            //添加
+            dataParams={cName:cname,department:selectId,departmentName:selectName};
+            operate = "user/save";
+        }else{
+            alert(222);
+            //修改
+            dataParams={id:parent.userId,cName:cname,department:selectId,departmentName:selectName};
+            operate = "user/update";
+        }
+       $.ajax({
+            type: "post",
+            url: contextPath+operate,
+            data:dataParams,
+            dataType: 'text',
+            success: function(data){
+                if(data=="success"){
+                    parent.successAlert('保存成功!');
+                }
+            }
+
+        });
+    }
+
+</script>
+</html>
