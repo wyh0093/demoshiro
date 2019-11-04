@@ -13,11 +13,15 @@ public class TaskModel implements Serializable {
 
     private String execution_id;
 
-    private String node;
+    private String processId;
+
+    private String node; //节点名称
 
     private String type;
 
     private String applyPerson;
+
+    private int assign;  //处理人
 
     public String getTaskId() {
         return taskId;
@@ -57,5 +61,21 @@ public class TaskModel implements Serializable {
 
     public void setApplyPerson(String applyPerson) {
         this.applyPerson = applyPerson;
+    }
+
+    public int getAssign() {
+        return assign;
+    }
+
+    public void setAssign(int assign) {
+        this.assign = assign;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
     }
 }

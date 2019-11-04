@@ -1,6 +1,8 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entityModel.TaskModel;
 import com.example.demo.service.ActivitiService;
+import com.example.demo.util.DatabaseUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -13,9 +15,11 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +37,16 @@ public class ActivitiServiceImpl implements ActivitiService {
     private ProcessEngine processEngine;
     @Autowired
     private RepositoryService repositoryService;
+
+
+    @Value("${spring.datasource.jdbc-url}")
+    public String url;
+
+    @Value("${spring.datasource.username}")
+    public String username;
+
+    @Value("${spring.datasource.password}")
+    public String password;
 
     @Override
     public byte[] getProcessImage(String processInstanceId) throws Exception {
@@ -83,6 +97,66 @@ public class ActivitiServiceImpl implements ActivitiService {
             return buffer;
         }
 
+    }
+
+    /**
+     * 通过用户id获取待办任务
+     * @param id
+     * @return
+     */
+    @Override
+    public List<TaskModel> findTaskByUserId(int id) {
+        List<TaskModel> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement prestate = null;
+        ResultSet rest = null;
+        String sql = "select ID_,EXECUTION_ID_,NAME_,ASSIGNEE_,PROC_INST_ID_ from act_ru_task where ASSIGNEE_ = ?";
+        try {
+            conn =  DatabaseUtil.getConnection(url,username,password);
+            prestate = conn.prepareStatement(sql);
+            prestate.setInt(1,id);
+            rest = prestate.executeQuery();
+            while (rest.next()){
+                TaskModel taskModel = new TaskModel();
+                taskModel.setTaskId(rest.getString(1));
+                taskModel.setExecution_id(rest.getString(2));
+                taskModel.setNode(rest.getString(3));
+                taskModel.setAssign(rest.getInt(4));
+                taskModel.setProcessId(rest.getString(5));
+                list.add(taskModel);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * 通过executionId获取taskId
+     * @param executionId
+     * @return
+     */
+    @Override
+    public String getTaskIdByExecutionId(String executionId) {
+
+        Connection conn = null;
+        PreparedStatement prestate = null;
+        ResultSet rest = null;
+        String TaskId = null;
+        String sql = "select ID_ from act_ru_task where EXECUTION_ID_=?";
+        try {
+            conn =  DatabaseUtil.getConnection(url,username,password);
+            prestate = conn.prepareStatement(sql);
+            prestate.setString(1,executionId);
+            rest = prestate.executeQuery();
+            while (rest.next()){
+                TaskId = rest.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return TaskId;
     }
 
     /**
@@ -159,5 +233,10 @@ public class ActivitiServiceImpl implements ActivitiService {
 
         }
         return highLightedFlowIds;
+    }
+
+    public void aa(){
+        System.out.println();
+
     }
 }

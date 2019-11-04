@@ -1,14 +1,15 @@
 package com.example.demo;
 
+import com.example.demo.util.ConstantUtil;
 import com.example.demo.util.DatabaseUtil;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * @program: demo
@@ -27,6 +28,10 @@ public class InitDatas {
 
     @Value("${spring.datasource.password}")
     public String password;
+
+    @Autowired
+    private RepositoryService repositoryService;
+
 
 
     /**
@@ -305,5 +310,78 @@ public class InitDatas {
         }
         return "";
     }
+
+    /**
+     * 初始化流程定义数据
+     * @return
+     */
+//    @Bean(name = "initActProcdef")
+    public String initActProcdef(){
+        String sql = "select count(*) from act_re_procdef where KEY_ =? ";
+        Connection conn = null;
+        PreparedStatement prestate = null;
+        ResultSet rest = null;
+        try {
+            conn = DatabaseUtil.getConnection(url,username,password);
+            prestate = conn.prepareStatement(sql);
+            prestate.setString(1,"leave");
+            rest = prestate.executeQuery();
+            int count = 0;
+            while (rest.next()){
+                count = rest.getInt(1);
+            }
+//            if(count==0){
+//                for (int i = 0; i < sqlArr.length; i++) {
+//                    state.addBatch(sqlArr[i]);
+//                }
+//                state.executeBatch();
+//            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DatabaseUtil.closePreparedStatement(prestate);
+            DatabaseUtil.closeConnection(conn);
+        }
+        return "";
+    }
+
+    /**
+     * 部署请假流程
+     */
+    @Bean(name = "activityLeaveDeploy")
+    public String activityLeaveDeploy(){
+        String sql = "select count(*) from act_re_procdef where KEY_ =? ";
+        Connection conn = null;
+        PreparedStatement prestate = null;
+        ResultSet rest = null;
+        try {
+            conn = DatabaseUtil.getConnection(url,username,password);
+            prestate = conn.prepareStatement(sql);
+            prestate.setString(1, ConstantUtil.activityKey.get("leave_key"));
+            rest = prestate.executeQuery();
+            int count = 0;
+            while (rest.next()){
+                count = rest.getInt(1);
+            }
+            if(count==0){
+                Deployment deployment = repositoryService.createDeployment()
+
+                        .name(ConstantUtil.activityKey.get("leave_name"))
+
+                        .addClasspathResource("processes/"+ConstantUtil.activityKey.get("leave_bpmn"))
+
+                        .addClasspathResource("processes/"+ConstantUtil.activityKey.get("leave_png"))
+
+                        .deploy();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DatabaseUtil.closePreparedStatement(prestate);
+            DatabaseUtil.closeConnection(conn);
+        }
+        return "";
+    }
+
 
 }
