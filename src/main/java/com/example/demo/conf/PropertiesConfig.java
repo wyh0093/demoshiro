@@ -43,9 +43,9 @@ public class PropertiesConfig {
                     ConstantUtil.activityKey.put(strArr[0],strArr[1]);
                 }
             });
-            ConstantUtil.activityKey.forEach((k,v) ->{
+            /*ConstantUtil.activityKey.forEach((k,v) ->{
                 System.out.println(k+","+v);
-            });
+            });*/
         } catch (Exception e) {
             e.printStackTrace();
         }

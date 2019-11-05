@@ -205,7 +205,4 @@ public class TestDemo {
         b.append("dsd");
     }
 
-    public synchronized void aa(AThread aThread){
-        System.out.println(2222);
-    }
 }

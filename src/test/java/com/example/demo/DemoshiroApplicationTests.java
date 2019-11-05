@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.entity.User;
 import com.example.demo.entityModel.TaskModel;
 import com.example.demo.util.ConstantUtil;
 import com.example.demo.util.DatabaseUtil;
@@ -10,6 +11,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.hibernate.validator.constraints.br.TituloEleitoral;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -146,6 +148,7 @@ public class DemoshiroApplicationTests {
 		}
 //			return list;
 	}
+
 	@Test
 	public void getResourcePath(){
 
@@ -164,6 +167,54 @@ public class DemoshiroApplicationTests {
 		System.out.println(aa);
 	}
 
+	@Test
+	public void writeUrl(){
+		try {
 
+			File csv = new File(ConstantUtil.getResourceUrl(),"mappingurl.csv"); // CSV数据文件
+			if (!csv.exists()) {
+				csv.createNewFile();
+			}
+			BufferedWriter bw = new BufferedWriter(new FileWriter(csv, true)); // 附加
+			// 添加新的数据行
+			bw.write("\"张三\"" + "," + "\"2000\"" + "," + "\"2004\"");
+			bw.newLine();
+			bw.close();
+		} catch (FileNotFoundException e) {
+			// File对象的创建过程中的异常捕获
+			e.printStackTrace();
+		} catch (IOException e) {
+			// BufferedWriter在关闭对象捕捉异常
+			e.printStackTrace();
+		}
+	}
+
+
+	@Autowired
+	private HttpServletRequest request;
+	//获取登登录者的ip
+	@Test
+	public void getCliectIp() {
+		String ip = request.getHeader("x-forwarded-for");
+		if (ip == null || ip.trim() == "" || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.trim() == "" || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.trim() == "" || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		User user = (User)request.getSession().getAttribute("user");
+		// 多个路由时，取第一个非unknown的ip
+		final String[] arr = ip.split(",");
+		for (final String str : arr) {
+			if (!"unknown".equalsIgnoreCase(str)) {
+				ip = str;
+				break;
+			}
+		}
+		System.out.println("ip----"+ip);
+	}
 
 }

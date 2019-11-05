@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * Created by qwe on 2019/7/1.
  */
-@Api(description = "角色接口")
+@Api(description = "角色管理")
 @RestController
 @RequestMapping("/role")
 public class RoleController {
