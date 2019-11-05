@@ -2,14 +2,28 @@ package com.example.demo;
 
 import com.example.demo.util.ConstantUtil;
 import com.example.demo.util.DatabaseUtil;
+import com.example.demo.util.GsonUtil;
+import com.example.demo.util.WriteFileUtil;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.HeadersRequestCondition;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @program: demo
@@ -383,7 +397,41 @@ public class InitDatas {
         return "";
     }
 
-    //获取所有url并追加到文件
+    @Autowired
+    WebApplicationContext applicationContext;
+    @Value("${requstmapping.url.filename}")
+    private String urlFileName;
 
+    /**
+     *获取所有url并追加到文件中
+     */
+    @Bean(name = "getAllUrl")
+    public String getAllUrl(){
+        RequestMappingHandlerMapping mapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
+        // 获取url与类和方法的对应信息
+        Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> m : map.entrySet()) {
+            Map<String, String> map1 = new HashMap<String, String>();
+            RequestMappingInfo info = m.getKey();
+            HandlerMethod method = m.getValue();
+            PatternsRequestCondition p = info.getPatternsCondition();
+            for (String url : p.getPatterns()) {
+                map1.put("url", url);
+            }
+            map1.put("className", method.getMethod().getDeclaringClass().getName()); // 类名
+            map1.put("method", method.getMethod().getName()); // 方法名
+            RequestMethodsRequestCondition methodsCondition = info.getMethodsCondition();
+            HeadersRequestCondition header = info.getHeadersCondition();
+            for (RequestMethod requestMethod : methodsCondition.getMethods()) {
+                map1.put("type", requestMethod.toString());
+            }
+
+            WriteFileUtil.writeUrl(map1,urlFileName);
+            list.add(map1);
+        }
+        String str = GsonUtil.toJson(list);
+        return "";
+    }
 
 }

@@ -83,6 +83,9 @@ public class AuditLogAspect {
         if (ip == null || ip.trim() == "" || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
+        if("0:0:0:0:0:0:0:1".equals(ip)){
+            ip = "127.0.0.1";
+        }
         // 多个路由时，取第一个非unknown的ip
         /*final String[] arr = ip.split(",");
         for (final String str : arr) {

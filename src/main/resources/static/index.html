@@ -87,7 +87,7 @@
                                 </shiro:hasPermission>
                                 <li><a href="http://localhost:8099/oa/department" target="right">部门管理</a></li>
                                 <shiro:hasPermission name="role:management">
-                                    <li><a href="http://localhost:8099/oa/role" target="right">角色管理</a></li>
+                                    <li><a id="rolemanage" href="#" target="right">角色管理</a></li>
                                 </shiro:hasPermission>
                             </ul>
                         </li>
@@ -134,6 +134,11 @@
 <script src="./js/layer_v2.1/layer/layer.js"></script>
 <script type="text/javascript" src="./i18n/app.js"></script>
 <script type="text/javascript">
+    $(function(){
+        document.getElementById("rolemanage").href=contextPath+"role";
+//        $("#rolemanage").href=contextPath+"role";
+//        alert( document.getElementById("rolemanage").href);
+    });
     function openlayer(id){
         layer.open({
             type: 2,

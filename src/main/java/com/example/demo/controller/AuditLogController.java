@@ -62,7 +62,6 @@ public class AuditLogController {
             list.add(map1);
         }
         String str = GsonUtil.toJson(list);
-        System.out.println(str);
     }
 
     public void writeUrl(Map<String, String> map){
