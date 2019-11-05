@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -27,12 +30,14 @@ public class AuditLog implements Serializable {
     private String business; //业务模块
 
     private String operateType; //操作类型
-
+    @CreatedDate
     private Date createTime; //开始时间
-
+    @LastModifiedDate
     private Date endTime; //结束时间
 
     private String descript; //操作描述
+
+    private String result; // 结果：(success|failed)
 
     public Integer getId() {
         return id;
@@ -96,5 +101,13 @@ public class AuditLog implements Serializable {
 
     public void setDescript(String descript) {
         this.descript = descript;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 }

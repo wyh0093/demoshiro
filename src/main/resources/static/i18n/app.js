@@ -1,4 +1,4 @@
-var contextPath = "http://localhost:8099/oa/";
+var contextPath = "http://127.0.0.1:8099/oa/";
 /*
 jQuery.i18n.properties({// 加载properties文件
     name:'app', // properties文件名称

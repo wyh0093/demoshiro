@@ -192,7 +192,7 @@ public class DemoshiroApplicationTests {
 
 	@Autowired
 	private HttpServletRequest request;
-	//获取登登录者的ip
+	//获取访问者的ip
 	@Test
 	public void getCliectIp() {
 		String ip = request.getHeader("x-forwarded-for");
@@ -205,7 +205,6 @@ public class DemoshiroApplicationTests {
 		if (ip == null || ip.trim() == "" || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getRemoteAddr();
 		}
-		User user = (User)request.getSession().getAttribute("user");
 		// 多个路由时，取第一个非unknown的ip
 		final String[] arr = ip.split(",");
 		for (final String str : arr) {
