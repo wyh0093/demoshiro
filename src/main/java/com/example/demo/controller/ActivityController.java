@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * Created by qwe on 2019/8/10.
  */
-@Api(description = "工作流接口")
+@Api(description = "工作流管理")
 @RestController
 @RequestMapping("/activity")
 public class ActivityController {
@@ -203,7 +203,7 @@ public class ActivityController {
 
 
 
-
+    @ApiOperation(value = "获取流程图片")
     @RequestMapping("/viewProcessImg")
     public void viewProcessImg(HttpServletResponse response) throws Exception {
 

@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.entity.User;
 import com.example.demo.service.PermissionService;
 import com.example.demo.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -23,6 +25,7 @@ import java.util.Map;
 /**
  * Created by qwe on 2019/8/2.
  */
+@Api(description = "登录模块")
 @Controller
 public class LoginController {
 
@@ -31,39 +34,11 @@ public class LoginController {
     @Autowired
     private PermissionService permissionService;
 
-    @RequestMapping("/login")
-    public String login(){
-        return "login";
-    }
-
-    @RequestMapping("/index")
-    public String index(){
-        return "index";
-    }
-
-    @RequestMapping("/user")
-    public String user(){
-        return "user";
-    }
-
-    @RequestMapping("/role")
-    public String role(){
-        return "role";
-    }
-
-    @RequestMapping("/department")
-    public String department(){
-        return "department";
-    }
-
-    @RequestMapping("/403")
-    public String noPermission(){
-        return "403";
-    }
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    @ApiOperation(value = "用户登录")
+    @RequestMapping(value = "/loginValidation",method = RequestMethod.POST)
     public String loginUrl(HttpServletRequest request, @RequestParam(name = "username") String username, @RequestParam(name = "password") String password
     ,Map<String, Object> map){
-// 从SecurityUtils里边创建一个 subject
+        // 从SecurityUtils里边创建一个 subject
         Subject subject = SecurityUtils.getSubject();
         // 在认证提交前准备 token（令牌）
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
@@ -89,7 +64,7 @@ public class LoginController {
     }
 
     //退出操作
-//    @ApiOperation(value = "用户退出", notes = "测试用接口")//这个你们不用管
+    @ApiOperation(value = "用户退出")
     @RequestMapping("/logout")
     public String logout() {
         Subject subject = SecurityUtils.getSubject();

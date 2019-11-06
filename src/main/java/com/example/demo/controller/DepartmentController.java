@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Created by qwe on 2019/7/1.
  */
-@Api(description = "部门接口")
+@Api(description = "部门管理")
 @RestController
 @RequestMapping("/depart")
 public class DepartmentController {
@@ -40,7 +40,7 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @ApiOperation(value = "分页查询部门")
+    @ApiOperation(value = "查询部门信息")
     @RequestMapping(value = "/findAllBypage",method = RequestMethod.POST)
     @RequiresPermissions("department:query")
     public Map<String, Object> findAllBypage(@RequestParam(name = "currentPage") Integer currentPage, @RequestParam(name = "size") Integer size,
@@ -109,7 +109,7 @@ public class DepartmentController {
     }
 
 
-    @ApiOperation(value = "导出信息")
+    @ApiOperation(value = "导出部门信息")
     @RequestMapping(value = "/export",method = RequestMethod.GET)
     @RequiresPermissions("department:export")
     public void export(HttpServletResponse response, @RequestParam(name = "keyword",required = false) String keyword){

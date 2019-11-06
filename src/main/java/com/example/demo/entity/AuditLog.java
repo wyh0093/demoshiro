@@ -3,6 +3,7 @@ package com.example.demo.entity;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.Date;
  * @author: Yunhuan Wang
  * @create: 2019/11/5 17:08
  **/
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "audit_log")
 public class AuditLog implements Serializable {
@@ -31,11 +33,15 @@ public class AuditLog implements Serializable {
 
     private String operateType; //操作类型
     @CreatedDate
-    private Date createTime; //开始时间
-    @LastModifiedDate
-    private Date endTime; //结束时间
+    private Date operateTime; //操作时间
 
-    private String descript; //操作描述
+    private String description; //操作描述
+
+    private String className; //类名
+
+    private String methodName; //方法名
+
+    private String requestWay; //请求方式
 
     private String result; // 结果：(success|failed)
 
@@ -79,28 +85,13 @@ public class AuditLog implements Serializable {
         this.operateType = operateType;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+
+    public String getDescription() {
+        return description;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getDescript() {
-        return descript;
-    }
-
-    public void setDescript(String descript) {
-        this.descript = descript;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getResult() {
@@ -109,5 +100,37 @@ public class AuditLog implements Serializable {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public Date getOperateTime() {
+        return operateTime;
+    }
+
+    public void setOperateTime(Date operateTime) {
+        this.operateTime = operateTime;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public String getRequestWay() {
+        return requestWay;
+    }
+
+    public void setRequestWay(String requestWay) {
+        this.requestWay = requestWay;
     }
 }

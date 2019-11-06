@@ -1,3 +1,3 @@
 #部署项目后，如果是多台机器访问的话，需要改下ip（单机访问无需修改 ）
 #1. static/i18n/app.js  将contextPath 改成真实机器的IP
-#2. kogin.html中form表单提交的action中需要改成真实机器IP
+#2. login.html中form表单提交的action中需要改成真实机器IP

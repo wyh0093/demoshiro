@@ -42,7 +42,7 @@ public class RoleController {
     private PermissionService permissionService;
 
 
-    @ApiOperation(value = "分页查询角色")
+    @ApiOperation(value = "查询角色信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pege", value = "是否分页(true:分页查询，false:不分页)", dataType = "boolean", paramType = "query",
                     allowableValues = "true,false",defaultValue = "true")
@@ -140,7 +140,7 @@ public class RoleController {
 
 
 
-    @ApiOperation(value = "导出信息")
+    @ApiOperation(value = "导出角色信息")
     @RequestMapping(value = "/export",method = RequestMethod.GET)
     @RequiresPermissions("role:export")
     public void export(HttpServletResponse response, @RequestParam(name = "roleName",required = false) String roleName){

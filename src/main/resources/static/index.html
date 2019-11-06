@@ -81,13 +81,13 @@
                             <span>系统管理</span> <i class="icon hasChild"></i></a></div>
                             <ul class="subnav">
                                 <shiro:hasPermission name="user:management">
-                                    <li><a href="http://localhost:8099/oa/user" target="right">用户管理</a></li>
+                                    <li><a id="user" href="#" target="right">用户管理</a></li>
                                 </shiro:hasPermission>
                                 <shiro:hasPermission name="department:management">
                                 </shiro:hasPermission>
-                                <li><a href="http://localhost:8099/oa/department" target="right">部门管理</a></li>
+                                <li><a id="depart" href="#" target="right">部门管理</a></li>
                                 <shiro:hasPermission name="role:management">
-                                    <li><a id="rolemanage" href="#" target="right">角色管理</a></li>
+                                    <li><a id="role" href="#" target="right">角色管理</a></li>
                                 </shiro:hasPermission>
                             </ul>
                         </li>
@@ -135,9 +135,9 @@
 <script type="text/javascript" src="./i18n/app.js"></script>
 <script type="text/javascript">
     $(function(){
-        document.getElementById("rolemanage").href=contextPath+"role";
-//        $("#rolemanage").href=contextPath+"role";
-//        alert( document.getElementById("rolemanage").href);
+        document.getElementById("role").href=contextPath+"role";
+        document.getElementById("depart").href=contextPath+"department";
+        document.getElementById("user").href=contextPath+"user";
     });
     function openlayer(id){
         layer.open({

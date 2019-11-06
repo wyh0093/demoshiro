@@ -4,12 +4,15 @@ import com.example.demo.util.ConstantUtil;
 import com.example.demo.util.DatabaseUtil;
 import com.example.demo.util.GsonUtil;
 import com.example.demo.util.WriteFileUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
@@ -327,40 +330,6 @@ public class InitDatas {
 
     /**
      * 初始化流程定义数据
-     * @return
-     */
-//    @Bean(name = "initActProcdef")
-    public String initActProcdef(){
-        String sql = "select count(*) from act_re_procdef where KEY_ =? ";
-        Connection conn = null;
-        PreparedStatement prestate = null;
-        ResultSet rest = null;
-        try {
-            conn = DatabaseUtil.getConnection(url,username,password);
-            prestate = conn.prepareStatement(sql);
-            prestate.setString(1,"leave");
-            rest = prestate.executeQuery();
-            int count = 0;
-            while (rest.next()){
-                count = rest.getInt(1);
-            }
-//            if(count==0){
-//                for (int i = 0; i < sqlArr.length; i++) {
-//                    state.addBatch(sqlArr[i]);
-//                }
-//                state.executeBatch();
-//            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            DatabaseUtil.closePreparedStatement(prestate);
-            DatabaseUtil.closeConnection(conn);
-        }
-        return "";
-    }
-
-    /**
-     * 部署请假流程
      */
     @Bean(name = "activityLeaveDeploy")
     public String activityLeaveDeploy(){
@@ -415,22 +384,39 @@ public class InitDatas {
             Map<String, String> map1 = new HashMap<String, String>();
             RequestMappingInfo info = m.getKey();
             HandlerMethod method = m.getValue();
+
+            //获取当前方法所在类名
+            Class<?> bean = method.getBeanType();
+//            RequestMapping requestMapping = bean.getAnnotation(RequestMapping.class);
+//            String[] value = requestMapping.value();
+//            String ss = value[0];
             PatternsRequestCondition p = info.getPatternsCondition();
             for (String url : p.getPatterns()) {
                 map1.put("url", url);
             }
+            //使用反射获取当前类注解内容
+            Api api = bean.getAnnotation(Api.class);
+            if(api!=null){
+                map1.put("business",api.description()); //业务模块描述
+            }
+            //获取方法上注解以及注解值
+            ApiOperation methodAnnotation = method.getMethodAnnotation(ApiOperation.class);
+            if(methodAnnotation!=null){
+                map1.put("operateType",methodAnnotation.value()); //操作类型
+            }
             map1.put("className", method.getMethod().getDeclaringClass().getName()); // 类名
-            map1.put("method", method.getMethod().getName()); // 方法名
+            map1.put("methodName", method.getMethod().getName()); // 方法名
             RequestMethodsRequestCondition methodsCondition = info.getMethodsCondition();
             HeadersRequestCondition header = info.getHeadersCondition();
             for (RequestMethod requestMethod : methodsCondition.getMethods()) {
-                map1.put("type", requestMethod.toString());
+                map1.put("requestWay", requestMethod.toString()); //请求方式
             }
 
-            WriteFileUtil.writeUrl(map1,urlFileName);
             list.add(map1);
         }
+        WriteFileUtil.writeUrl(list,urlFileName);
         String str = GsonUtil.toJson(list);
+//        System.out.println("str: "+str);
         return "";
     }
 

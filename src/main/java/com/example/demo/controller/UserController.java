@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * Created by qwe on 2019/6/27.
  */
-@Api(description = "用户接口")
+@Api(description = "用户管理")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -62,7 +62,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "分页查询用户信息")
+    @ApiOperation(value = "查询用户信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pege", value = "是否分页(true:分页查询，false:不分页)", dataType = "boolean", paramType = "query",
                     allowableValues = "true,false",defaultValue = "true")

@@ -4,13 +4,17 @@ import com.example.demo.entity.AuditLog;
 import com.example.demo.entity.User;
 import com.example.demo.service.AuditLogService;
 import com.example.demo.util.ConstantUtil;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -30,15 +34,53 @@ import java.nio.file.Paths;
 @Component
 public class AuditLogAspect {
 
-    @Pointcut("execution (* com.example.demo.controller..*.*(..)) && !execution(* com.example.demo.controller.AuditLogController.*(..)) && !execution(* com.example.demo.controller" +
-            ".LoginController.*(..))")
+    @Pointcut("execution (* com.example.demo.controller..*.*(..)) && !execution(* com.example.demo.controller.AuditLogController..*(..)) && !execution(* com.example.demo" +
+            ".controller.HtmlController.*(..)) && !execution(* com.example.demo.controller.LoginController..*(..))")
     public void webLog() {
+    }
+
+    @Pointcut("execution(* com.example.demo.controller.LoginController.*(..))")
+    public void loginLog() {
+    }
+    @Pointcut("execution(* com.example.demo.controller.LoginController.logout())")
+    public void logoutLog() {
     }
 
     @Autowired
     private AuditLogService auditLogService;
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    WebApplicationContext applicationContext;
+
+
+
+    @Before("logoutLog()")
+    public void before(JoinPoint joinPoint)throws Exception {
+        String requestUrl = request.getServletPath();
+        String path = ConstantUtil.getResourceUrl();
+        AuditLog auditLog = new AuditLog();
+        saveAuditLog(requestUrl,auditLog);
+    }
+    /*@After("loginLog()")
+    public void after(JoinPoint joinPoint)throws Throwable {
+        String requestUrl = request.getServletPath();
+        String path = ConstantUtil.getResourceUrl();
+        AuditLog auditLog = new AuditLog();
+        User user = (User)request.getSession().getAttribute("user");
+        if(user!=null && requestUrl.contains("loginValidation"))
+        saveAuditLog(requestUrl,auditLog);
+    }*/
+
+    @AfterReturning(returning = "ret",pointcut = "loginLog()")
+    public void doAfter(JoinPoint joinPoint,Object ret) throws Exception {
+        String requestUrl = request.getServletPath();
+        AuditLog auditLog = new AuditLog();
+        System.out.println(ret);
+        if("index".equals(ret) && requestUrl.contains("loginValidation")){
+            saveAuditLog(requestUrl,auditLog);
+        }
+    }
 
     @Around("webLog()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -46,7 +88,6 @@ public class AuditLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         String requestUrl = request.getServletPath();
-        String path = ConstantUtil.getResourceUrl();
         Object obj = null;
         AuditLog auditLog = new AuditLog();
         try {
@@ -56,20 +97,37 @@ public class AuditLogAspect {
             auditLog.setResult("failed");
             throwable.printStackTrace();
         }finally {
-            Files.readAllLines(Paths.get(path+"mappingurl.csv")).stream().forEach(line ->{
-                if(line.contains(",")){
-                    String[] strArr = line.split(",");
-                    if(requestUrl.equals(strArr[0])){
-                        User user = (User)request.getSession().getAttribute("user");
-                        auditLog.setUsername(user.getUserName());
-                        auditLog.setIp(getIpAddr(request));
-                        auditLogService.save(auditLog);
-                    }
-                }
-            });
+            saveAuditLog(requestUrl,auditLog);
         }
         return obj;
 
+    }
+
+    /**
+     * 存储日志
+     * @param url
+     * @param auditLog
+     * @throws Exception
+     */
+    public void saveAuditLog(String url,AuditLog auditLog) throws Exception{
+        String path = ConstantUtil.getResourceUrl();
+        Files.readAllLines(Paths.get(path+"mappingurl.csv")).stream().forEach(line ->{
+            if(line.contains(",")){
+                String[] strArr = line.split(",");
+                if(url.equals(strArr[0])){
+                    User user = (User)request.getSession().getAttribute("user");
+                    auditLog.setUsername(user.getUserName());
+                    auditLog.setIp(getCliectIp());
+                    auditLog.setBusiness(strArr[1]);
+                    auditLog.setOperateType(strArr[2]);
+                    auditLog.setMethodName(strArr[3]);
+                    auditLog.setRequestWay(strArr[4]);
+                    auditLog.setClassName(strArr[5]);
+                    auditLog.setDescription(strArr[2]);
+                    auditLogService.save(auditLog);
+                }
+            }
+        });
     }
 
     public String getCliectIp() {
@@ -96,43 +154,4 @@ public class AuditLogAspect {
         }*/
         return ip;
     }
-
-    public String getIpAddr(HttpServletRequest request) {
-        String ipAddress = null;
-        try {
-            ipAddress = request.getHeader("x-forwarded-for");
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-                ipAddress = request.getHeader("Proxy-Client-IP");
-            }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-                ipAddress = request.getHeader("WL-Proxy-Client-IP");
-            }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-                ipAddress = request.getRemoteAddr();
-                if (ipAddress.equals("127.0.0.1")) {
-                    // 根据网卡取本机配置的IP
-                    InetAddress inet = null;
-                    try {
-                        inet = InetAddress.getLocalHost();
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    }
-                    ipAddress = inet.getHostAddress();
-                }
-            }
-            // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
-            if (ipAddress != null && ipAddress.length() > 15) { // "***.***.***.***".length()
-                // = 15
-                if (ipAddress.indexOf(",") > 0) {
-                    ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
-                }
-            }
-        } catch (Exception e) {
-            ipAddress="";
-        }
-        // ipAddress = this.getRequest().getRemoteAddr();
-
-        return ipAddress;
-    }
-
 }

@@ -58,12 +58,6 @@ public class PermissionController {
         String str = GsonUtil.toJson(permissionModelList);
         return str;
     }
-    @ApiOperation(value = "查询用户所拥有的菜单,一般只有二级权限")
-    @RequestMapping(value = "/menu/{id}",method = RequestMethod.GET)
-    public String menu(@PathVariable(name = "id") String id){
-
-        return null;
-    }
 
     @ApiOperation(value = "给角色分配权限")
     @RequestMapping(value = "/update",method = RequestMethod.POST)
