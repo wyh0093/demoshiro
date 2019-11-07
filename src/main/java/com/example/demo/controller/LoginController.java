@@ -65,7 +65,7 @@ public class LoginController {
 
     //退出操作
     @ApiOperation(value = "用户退出")
-    @RequestMapping("/logout")
+    @RequestMapping(value = "/logout",method = RequestMethod.GET)
     public String logout() {
         Subject subject = SecurityUtils.getSubject();
         if (subject != null) {
