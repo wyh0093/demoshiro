@@ -34,7 +34,7 @@ public class LoginController {
     @Autowired
     private PermissionService permissionService;
 
-    @ApiOperation(value = "用户登录")
+    @ApiOperation(value = "登录")
     @RequestMapping(value = "/loginValidation",method = RequestMethod.POST)
     public String loginUrl(HttpServletRequest request, @RequestParam(name = "username") String username, @RequestParam(name = "password") String password
     ,Map<String, Object> map){
@@ -64,7 +64,7 @@ public class LoginController {
     }
 
     //退出操作
-    @ApiOperation(value = "用户退出")
+    @ApiOperation(value = "退出")
     @RequestMapping(value = "/logout",method = RequestMethod.GET)
     public String logout() {
         Subject subject = SecurityUtils.getSubject();

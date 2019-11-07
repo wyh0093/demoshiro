@@ -79,7 +79,7 @@
             //alert(parent.roleId);
             $.ajax({
                 type: "post",
-                url: contextPath+"user/findOne",
+                url: contextPath+"user/findById",
                 data:{id:parent.userId},
                 dataType: 'json',
                 success: function(data){
@@ -103,16 +103,17 @@
         $.ajax({
             type: "post",
             url: contextPath+"depart/findAll",
-            data:null,
+            data:null,data:{currentPage:1,size:10,keyword:"",page:"false"},
             dataType: 'json',
             success: function(data){
                 var html="";
+                var content = data.content;
                 html+="<option value=''>请选择</option>";
-                for(var i=0;i<data.length;i++){
-                    if(data[i].id==departId){
-                        html+="<option value='"+data[i].id+"' selected>"+data[i].name+"</option>";
+                for(var i=0;i<content.length;i++){
+                    if(content[i].id==departId){
+                        html+="<option value='"+content[i].id+"' selected>"+content[i].name+"</option>";
                     }else {
-                        html+="<option value='"+data[i].id+"'>"+data[i].name+"</option>";
+                        html+="<option value='"+content[i].id+"'>"+content[i].name+"</option>";
                     }
                 }
                 var depart = document.getElementById("depart");
@@ -142,7 +143,7 @@
             dataParams={cName:cname,department:selectId,departmentName:selectName};
             operate = "user/save";
         }else{
-            alert(222);
+            //alert(222);
             //修改
             dataParams={id:parent.userId,cName:cname,department:selectId,departmentName:selectName};
             operate = "user/update";

@@ -40,14 +40,16 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @ApiOperation(value = "查询部门信息")
-    @RequestMapping(value = "/findAllBypage",method = RequestMethod.POST)
+    @ApiOperation(value = "查询部门")
+    @RequestMapping(value = "/findAll",method = RequestMethod.POST)
     @RequiresPermissions("department:query")
-    public Map<String, Object> findAllBypage(@RequestParam(name = "currentPage") Integer currentPage, @RequestParam(name = "size") Integer size,
-                                          @RequestParam(name = "keyword",required = false) String keyword, HttpServletRequest request){
+    public Map<String, Object> findAll(@RequestParam(name = "currentPage") Integer currentPage, @RequestParam(name = "size") Integer size,
+                                          @RequestParam(name = "keyword",required = false) String keyword,
+                                       @RequestParam(name = "page",required = true) String page, HttpServletRequest request){
 
         Pageable Pageable = PageRequest.of(currentPage - 1, size, Sort.by(Sort.Direction.ASC, "id"));
-        List<Department> list  = departmentService.findAll(Pageable,keyword,true);
+
+        List<Department> list  = departmentService.findAll(Pageable,keyword,page);
         //获取该用户拥有权限
         List<String> permossionStr = (List<String>)request.getSession().getAttribute("permossionStr");
         String[] strArray = new String[list.size()];
@@ -84,7 +86,7 @@ public class DepartmentController {
         return departmentService.findById(id);
     }
 
-    @ApiOperation(value = "添加部门")
+    @ApiOperation(value = "创建部门")
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     @RequiresPermissions("department:add")
     public String save(Department department){
@@ -92,7 +94,7 @@ public class DepartmentController {
         return "success";
     }
 
-    @ApiOperation(value = "修改部门")
+    @ApiOperation(value = "更新部门")
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     @RequiresPermissions("department:update")
     public String update(Department department){
@@ -114,7 +116,7 @@ public class DepartmentController {
     @RequiresPermissions("department:export")
     public void export(HttpServletResponse response, @RequestParam(name = "keyword",required = false) String keyword){
 
-        List<Department> list = departmentService.findAll(null,keyword,false);
+        List<Department> list = departmentService.findAll(null,keyword,"false");
 
         ExcelData data = new ExcelData();
         List<List<Object>> rows = new ArrayList();
@@ -143,12 +145,12 @@ public class DepartmentController {
 
     }
 
-    @ApiOperation(value = "查询所有部门")
+    /*@ApiOperation(value = "查询所有部门")
     @RequestMapping(value = "/findAll",method = RequestMethod.POST)
     public List<Department> findAll(){
         List<Department> list = departmentService.findAll(null,null,false);
         return list;
-    }
+    }*/
 
 
 

@@ -121,8 +121,8 @@
         var keyword = $("#name").val();
         $.ajax({
             type: "post",
-            url: contextPath+"depart/findAllBypage",
-            data:{currentPage:currentPage,size:10,keyword:keyword},
+            url: contextPath+"depart/findAll",
+            data:{currentPage:currentPage,size:10,keyword:keyword,page:"true"},
             dataType: 'json',
             success: function(data){
                 var html="";

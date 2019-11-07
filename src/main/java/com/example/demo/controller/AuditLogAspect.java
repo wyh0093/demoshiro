@@ -2,13 +2,20 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.AuditLog;
 import com.example.demo.entity.User;
+import com.example.demo.entityModel.RoleModel;
 import com.example.demo.service.AuditLogService;
 import com.example.demo.util.ConstantUtil;
+import javassist.*;
+import javassist.bytecode.CodeAttribute;
+import javassist.bytecode.LocalVariableAttribute;
+import javassist.bytecode.MethodInfo;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +30,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @program: demo
@@ -35,7 +44,7 @@ import java.nio.file.Paths;
 public class AuditLogAspect {
 
     @Pointcut("execution (* com.example.demo.controller..*.*(..)) && !execution(* com.example.demo.controller.AuditLogController..*(..)) && !execution(* com.example.demo" +
-            ".controller.HtmlController.*(..)) && !execution(* com.example.demo.controller.LoginController..*(..))")
+            ".controller.HtmlController.*(..)) && !execution(* com.example.demo.controller.LoginController..*(..)) ")
     public void webLog() {
     }
 
@@ -45,6 +54,7 @@ public class AuditLogAspect {
     @Pointcut("execution(* com.example.demo.controller.LoginController.logout())")
     public void logoutLog() {
     }
+
 
     @Autowired
     private AuditLogService auditLogService;
@@ -60,7 +70,8 @@ public class AuditLogAspect {
         String requestUrl = request.getServletPath();
         String path = ConstantUtil.getResourceUrl();
         AuditLog auditLog = new AuditLog();
-        saveAuditLog(requestUrl,auditLog);
+        auditLog.setResult("success");
+        saveAuditLog(requestUrl,auditLog,null);
     }
     /*@After("loginLog()")
     public void after(JoinPoint joinPoint)throws Throwable {
@@ -76,9 +87,9 @@ public class AuditLogAspect {
     public void doAfter(JoinPoint joinPoint,Object ret) throws Exception {
         String requestUrl = request.getServletPath();
         AuditLog auditLog = new AuditLog();
-        System.out.println(ret);
         if("index".equals(ret) && requestUrl.contains("loginValidation")){
-            saveAuditLog(requestUrl,auditLog);
+            auditLog.setResult("success");
+            saveAuditLog(requestUrl,auditLog,null);
         }
     }
 
@@ -89,15 +100,28 @@ public class AuditLogAspect {
         HttpServletRequest request = attributes.getRequest();
         String requestUrl = request.getServletPath();
         Object obj = null;
+        Map<String,Object > nameAndArgs = null;
         AuditLog auditLog = new AuditLog();
         try {
+            //获取方法参数
+           /* String classType = joinPoint.getTarget().getClass().getName();
+            Class<?> clazz = Class.forName(classType);
+            String clazzName = clazz.getName();
+            String methodName = joinPoint.getSignature().getName(); //获取方法名称
+            Object[] args = joinPoint.getArgs();//参数
+            //获取参数名称和值
+            nameAndArgs = getFieldsName(this.getClass(), clazzName, methodName,args);
+            System.out.println(nameAndArgs.toString());*/
+
             obj = joinPoint.proceed();
             auditLog.setResult("success");
         } catch (Throwable throwable) {
             auditLog.setResult("failed");
             throwable.printStackTrace();
         }finally {
-            saveAuditLog(requestUrl,auditLog);
+            if(!"/depart/findById".equals(requestUrl) && !"/user/findById".equals(requestUrl) && !"/role/findById".equals(requestUrl)){
+                saveAuditLog(requestUrl,auditLog,nameAndArgs);
+            }
         }
         return obj;
 
@@ -109,7 +133,7 @@ public class AuditLogAspect {
      * @param auditLog
      * @throws Exception
      */
-    public void saveAuditLog(String url,AuditLog auditLog) throws Exception{
+    public void saveAuditLog(String url,AuditLog auditLog,Map<String,Object > nameAndArgs) throws Exception{
         String path = ConstantUtil.getResourceUrl();
         Files.readAllLines(Paths.get(path+"mappingurl.csv")).stream().forEach(line ->{
             if(line.contains(",")){
@@ -123,7 +147,7 @@ public class AuditLogAspect {
                     auditLog.setMethodName(strArr[3]);
                     auditLog.setRequestWay(strArr[4]);
                     auditLog.setClassName(strArr[5]);
-                    auditLog.setDescription(strArr[2]);
+                    auditLog.setDescription("用户【"+user.getUserName()+"】"+strArr[2]);
                     auditLogService.save(auditLog);
                 }
             }
@@ -153,5 +177,31 @@ public class AuditLogAspect {
             }
         }*/
         return ip;
+    }
+
+    private Map<String,Object> getFieldsName(Class cls, String clazzName, String methodName, Object[] args) throws NotFoundException {
+        Map<String,Object > map=new HashMap<String,Object>();
+
+        ClassPool pool = ClassPool.getDefault();
+        //ClassClassPath classPath = new ClassClassPath(this.getClass());
+        ClassClassPath classPath = new ClassClassPath(cls);
+        pool.insertClassPath(classPath);
+
+        CtClass cc = pool.get(clazzName);
+        CtMethod cm = cc.getDeclaredMethod(methodName);
+        MethodInfo methodInfo = cm.getMethodInfo();
+        CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
+        LocalVariableAttribute attr = (LocalVariableAttribute) codeAttribute.getAttribute(LocalVariableAttribute.tag);
+        if (attr == null) {
+            // exception
+        }
+        // String[] paramNames = new String[cm.getParameterTypes().length];
+        int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
+        for (int i = 0; i < cm.getParameterTypes().length; i++){
+            map.put( attr.variableName(i + pos),args[i]);//paramNames即参数名
+        }
+
+        //Map<>
+        return map;
     }
 }

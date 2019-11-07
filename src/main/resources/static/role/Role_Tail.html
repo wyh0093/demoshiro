@@ -75,7 +75,7 @@
             //alert(parent.roleId);
             $.ajax({
                 type: "post",
-                url: contextPath+"role/findOne",
+                url: contextPath+"role/findById",
                 data:{id:parent.roleId},
                 dataType: 'json',
                 success: function(data){

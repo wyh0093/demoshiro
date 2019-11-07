@@ -50,7 +50,7 @@ public class UserController {
     private DepartmentRepository departmentRepository;
 
     @ApiOperation(value = "根据id查询用户")
-    @RequestMapping(value = "/findOne",method = RequestMethod.POST)
+    @RequestMapping(value = "/findById",method = RequestMethod.POST)
     @RequiresPermissions("user:update")
     public UserModel findById(@RequestParam(name = "id") Integer id){
 
@@ -62,7 +62,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "查询用户信息")
+    @ApiOperation(value = "查询用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pege", value = "是否分页(true:分页查询，false:不分页)", dataType = "boolean", paramType = "query",
                     allowableValues = "true,false",defaultValue = "true")
@@ -127,7 +127,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "导出信息")
+    @ApiOperation(value = "导出用户信息")
     @RequestMapping(value = "/export",method = RequestMethod.GET)
     @RequiresPermissions("user:export")
     public void export(HttpServletResponse response, @RequestParam(name = "keyword",required = false) String keyword,
@@ -170,7 +170,7 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "添加用户")
+    @ApiOperation(value = "创建用户")
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     @RequiresPermissions("user:add")
     public String save(UserModel userModel){
@@ -212,7 +212,7 @@ public class UserController {
         userService.save(user2);
     }
 
-    @ApiOperation(value = "修改用户")
+    @ApiOperation(value = "更新用户")
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     @RequiresPermissions("user:update")
     public String update(UserModel userModel){

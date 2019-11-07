@@ -57,9 +57,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<Department> findAll(Pageable pageable,String keyword,boolean flag) {
+    public List<Department> findAll(Pageable pageable,String keyword,String flag) {
         List<Department> all = new ArrayList<>();
-        if(flag){
+        if("true".equals(flag)){
             all = departmentRepository.findAll(findCriteria(keyword),pageable).getContent();
         }else {
             all = departmentRepository.findAll(findCriteria(keyword),Sort.by(Sort.Direction.ASC, "id"));

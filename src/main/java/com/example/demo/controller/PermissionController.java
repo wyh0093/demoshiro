@@ -28,7 +28,7 @@ public class PermissionController {
     private PermissionService permissionService;
     @Autowired
     private RoleService roleService;
-    @ApiOperation(value = "查询用户所拥有的权限")
+    @ApiOperation(value = "查询用户拥有的权限")
     @RequestMapping(value = "/userPermission",method = RequestMethod.POST)
     @ResponseBody
     public String userPermission(@RequestParam(name = "id"  ) Integer id){

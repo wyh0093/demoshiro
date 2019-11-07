@@ -17,7 +17,7 @@ public interface DepartmentService {
     List<Department> findByCName(String cName);
 
 
-    List<Department> findAll(Pageable pageable, String keyword,boolean flag);
+    List<Department> findAll(Pageable pageable, String keyword,String flag);
 
     Department findById(Integer id);
 

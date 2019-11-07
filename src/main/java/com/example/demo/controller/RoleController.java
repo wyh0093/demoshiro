@@ -42,7 +42,7 @@ public class RoleController {
     private PermissionService permissionService;
 
 
-    @ApiOperation(value = "查询角色信息")
+    @ApiOperation(value = "查询角色")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pege", value = "是否分页(true:分页查询，false:不分页)", dataType = "boolean", paramType = "query",
                     allowableValues = "true,false",defaultValue = "true")
@@ -97,7 +97,7 @@ public class RoleController {
     }
 
     @ApiOperation(value = "根据id查找角色信息")
-    @RequestMapping(value = "/findOne",method = RequestMethod.POST)
+    @RequestMapping(value = "/findById",method = RequestMethod.POST)
     @RequiresPermissions("role:update")
     public RoleModel findOneById(@RequestParam(name = "id") Integer id){
 
@@ -107,7 +107,7 @@ public class RoleController {
         return roleModel;
     }
 
-    @ApiOperation(value = "添加角色")
+    @ApiOperation(value = "创建角色")
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     @RequiresPermissions("role:add")
     public String save(RoleModel roleModel){
@@ -118,7 +118,7 @@ public class RoleController {
         return "success";
     }
 
-    @ApiOperation(value = "修改角色")
+    @ApiOperation(value = "更新角色")
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     @RequiresPermissions("role:update")
     public String update(RoleModel roleModel){
