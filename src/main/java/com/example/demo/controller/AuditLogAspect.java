@@ -35,8 +35,8 @@ import java.util.Map;
 
 /**
  * @program: demo
- * @description:
- * @author: Yunhuan Wang
+ * @description: 利用切面获取日志操作
+ * @author: wyh
  * @create: 2019/11/5 16:23
  **/
 @Aspect

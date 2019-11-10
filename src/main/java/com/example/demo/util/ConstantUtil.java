@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @program: demoshiro
  * @description:
- * @author: Zonglin Yue
+ * @author: wyh
  * @create: 2019-11-04 14:33
  **/
 public class ConstantUtil {
@@ -33,4 +33,22 @@ public class ConstantUtil {
         return path;
     }
 
+    //请假流程的节点名称
+    //----------start-------------------------
+    public static final String leaveStart = "申请";
+    public static final String leaveManagerApproval = "经理审批";
+    public static final String leaveBossApproval = "总经理审批";
+    public static final String leaveEnd = "办结";
+    //----------end---------------------------
+
+
+    /**
+     * 根据executionId获取申请人信息
+     * @param executionId
+     * @return
+     */
+    public User getApplyPerson(String executionId) {
+
+        return null;
+    }
 }

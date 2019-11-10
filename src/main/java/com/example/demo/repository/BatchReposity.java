@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @program: demoshiro
  * @description:
- * @author: Yunhuan Wang
+ * @author: wyh
  * @create: 2019/11/4 23:30
  **/
 public class BatchReposity<T> {

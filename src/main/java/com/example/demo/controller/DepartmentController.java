@@ -30,8 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by qwe on 2019/7/1.
- */
+ * @program: demo
+ * @description:部门
+ * @author: wyh
+ * @create: 2019/11/5 10:52
+ **/
 @Api(description = "部门管理")
 @RestController
 @RequestMapping("/depart")

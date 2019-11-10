@@ -5,7 +5,7 @@ import com.example.demo.entity.AuditLog;
 /**
  * @program: demo
  * @description:
- * @author: Yunhuan Wang
+ * @author: wyh
  * @create: 2019/11/5 17:32
  **/
 public interface AuditLogService {
