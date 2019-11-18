@@ -26,8 +26,8 @@ import java.util.Map;
 
 /**
  * @program: demo
- * @description:
- * @author: Yunhuan Wang
+ * @description:审计日志
+ * @author: wyh
  * @create: 2019/11/5 10:52
  **/
 @Api(description = "审计管理")

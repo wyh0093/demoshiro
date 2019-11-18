@@ -1,18 +1,17 @@
 package com.example.demo.repository;
 
+import com.example.demo.entity.ActiviHistory;
 import com.example.demo.entity.ActivityType;
-import com.example.demo.entity.AuditLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
- * @program: demo
+ * @program: demoshiro
  * @description:
  * @author: wyh
- * @create: 2019/11/5 17:30
+ * @create: 2019/11/10 22:48
  **/
 @Repository
-public interface AuditLogRepository extends JpaRepository<AuditLog,Integer>, JpaSpecificationExecutor<AuditLog> {
-
+public interface ActivityHistoryRepository extends JpaRepository<ActiviHistory,Integer>,JpaSpecificationExecutor<ActiviHistory> {
 }

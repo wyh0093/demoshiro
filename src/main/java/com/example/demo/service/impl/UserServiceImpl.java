@@ -201,6 +201,17 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(userRepository.findUserById(id));
     }
 
+    /**
+     * 根据executionId获取申请人信息
+     * @param executionId
+     * @return
+     */
+    @Override
+    public User getApplyPerson(String executionId) {
+
+        return null;
+    }
+
 
     public Specification<User> findCriteria(String keyword,Integer statusId){
 

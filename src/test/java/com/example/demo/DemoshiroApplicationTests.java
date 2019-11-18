@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 
@@ -32,6 +33,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +87,7 @@ public class DemoshiroApplicationTests {
 		variables.put("apply",2);
 		//请假天数小于3天
 		variables.put("flag","false");
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey("leave2",variables);
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("leave",variables);
 		String processId = pi.getId();
 		System.out.println("流程创建成功，当前流程实例ID：" + processId);
 
@@ -100,9 +104,9 @@ public class DemoshiroApplicationTests {
 	@Test
 	public void Deal(){
 		Map<String, Object> variables = new HashMap<String, Object>();
-		String taskid = "32503";
-		variables.put("flag","true");
-//		variables.put("boss",5);
+		String taskid = "22503";
+//		variables.put("flag","true");
+//		variables.put("apply",2);
 		taskService.complete(taskid,variables);
 	}
 	@Test
@@ -221,6 +225,7 @@ public class DemoshiroApplicationTests {
 		System.out.println("ip----"+ip);
 	}
 
+<<<<<<< HEAD
 	@Autowired
 	private TestBRepository testBRepository;
 	@Autowired
@@ -239,4 +244,13 @@ public class DemoshiroApplicationTests {
 //		testBRepository.delete(testB);
 	}
 
+=======
+	public void getCurrentTime(){
+
+		//
+//		DateTimeFormat(LocalDateTime.now());
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String time = df.format(LocalDateTime.now());
+	}
+>>>>>>> refs/remotes/origin/master
 }

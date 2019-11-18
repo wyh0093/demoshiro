@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @program: demo
  * @description:
- * @author: Yunhuan Wang
+ * @author: wyh
  * @create: 2019/11/6 15:38
  **/
 @Api(description = "跳转到页面")

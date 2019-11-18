@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by qwe on 2019/11/2.
@@ -15,13 +16,15 @@ public class ActiviHistory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;  //主键
 
-    private int executionId; //任务的executionId
+    private String executionId; //任务的executionId
 
     private String node; //任务节点名称
 
     private String dealPerson; //处理人
 
     private String dealOpinion; //处理意见
+
+    private Date operateTime; //处理时间
 
 
     public int getId() {
@@ -32,11 +35,11 @@ public class ActiviHistory implements Serializable {
         this.id = id;
     }
 
-    public int getExecutionId() {
+    public String getExecutionId() {
         return executionId;
     }
 
-    public void setExecutionId(int executionId) {
+    public void setExecutionId(String executionId) {
         this.executionId = executionId;
     }
 
@@ -62,5 +65,13 @@ public class ActiviHistory implements Serializable {
 
     public void setDealOpinion(String dealOpinion) {
         this.dealOpinion = dealOpinion;
+    }
+
+    public Date getOperateTime() {
+        return operateTime;
+    }
+
+    public void setOperateTime(Date operateTime) {
+        this.operateTime = operateTime;
     }
 }
