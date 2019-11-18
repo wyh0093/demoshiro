@@ -11,6 +11,7 @@ import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.ExcelUtils;
+import com.example.demo.util.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -74,17 +75,17 @@ public class UserController {
                                       @RequestParam(name = "status",required = false) Integer status){
 
         Pageable Pageable = PageRequest.of(currentPage - 1, size, Sort.by(Sort.Direction.ASC, "id"));
-        List<UserModel> list =  userService.findAll(Pageable,keyword,status,true);
-        int totalCount = userService.findAll(Pageable,keyword,status,false).size();
-        int totalPage =  (Integer)((totalCount/size)+1);
+        PageInfo<User> pageInfo =  userService.findAll(Pageable,keyword,status,true);
+//        int totalCount = userService.findAll(Pageable,keyword,status,false).size();
+        int totalPage =  (Integer)((pageInfo.getCount()/size)+1);
         Map<String,Object> map = new HashMap<>();
-        map.put("content",list);
-        map.put("totalCount",totalCount);
+        map.put("content",pageInfo.getList());
+        map.put("totalCount",pageInfo.getCount());
         map.put("totalPage",totalPage);
-        String[] strArray = new String[list.size()];
+        String[] strArray = new String[pageInfo.getCount()];
         List<String> permossionStr = (List<String>)request.getSession().getAttribute("permossionStr");
-        for(int i=0;i<list.size();i++){
-            strArray[i]=this.compire(list.get(i).getId(),permossionStr);
+        for(int i=0;i<pageInfo.getCount();i++){
+            strArray[i]=this.compire(pageInfo.getList().get(i).getId(),permossionStr);
         }
         map.put("operate",strArray);
         return map;
@@ -133,13 +134,15 @@ public class UserController {
     public void export(HttpServletResponse response, @RequestParam(name = "keyword",required = false) String keyword,
                        @RequestParam(name = "status",required = false) Integer status){
 
-        List<UserModel> list = userService.findAll(null,keyword,status,false);
+//        List<UserModel> list = userService.findAll(null,keyword,status,false);
 
+        PageInfo<User> pageInfo = userService.findAll(null,keyword,status,false);
+        List<User> list = pageInfo.getList();
         ExcelData data = new ExcelData();
 
         List<List<Object>> rows = new ArrayList();
         for(int i = 0, length = list.size();i<length;i++){
-            UserModel user = list.get(i);
+            User user = list.get(i);
             List<Object> row = new ArrayList();
             row.add((i+1));
             row.add(user.getcName());

@@ -55,7 +55,7 @@ public class InitDatas {
     /**
      *初始化人员数据
      */
-    @Bean(name = "initUser")
+//    @Bean(name = "initUser")
     public String initUser(){
         String sql = "select count(*) from user";
         String sql2 = "INSERT INTO user VALUES (1, 'admin', null, null, '123', 0, 'admin');\n" +
@@ -96,7 +96,7 @@ public class InitDatas {
      * 初始化角色数据
      * @return
      */
-    @Bean(name = "initRole")
+//    @Bean(name = "initRole")
     public String initRole(){
         String sql = "select count(*) from role ";
         String sql2 = "INSERT INTO role VALUES (1, '管理员', '管理员', 'admin');\n" +

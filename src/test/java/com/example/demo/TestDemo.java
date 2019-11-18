@@ -3,6 +3,7 @@ package com.example.demo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,17 +20,42 @@ public class TestDemo {
 //        maopao();
 
 
-        arr = new int[]{4,1,5,3,7,6,9,8};
+        /*arr = new int[]{4,1,5,3,7,6,9,8};
         aaaaa(0,7);
         for(int i=0;i<arr.length;i++){
             System.out.println(arr[i]);
+        }*/
+
+
+
+        String str = test2("Sddd");
+
+
+    }
+
+    public static String test2(String str){
+         char [] chars = str.toCharArray();
+         chars[0]+= 32;
+         return String.valueOf(chars);
+    }
+
+    public static void test1(){
+
+        HashMap<String,Integer> hashMap = new HashMap<>();
+        hashMap.put("1",1110);
+
+        try {
+            Integer integer = hashMap.get(1);
+            System.out.println(integer);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-
-
-
-
+        try {
+            Integer dsds=3;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("www");
     }
 
     public static void maopao(){

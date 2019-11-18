@@ -1,7 +1,12 @@
 package com.example.demo;
 
+import com.example.demo.entity.TestA;
+import com.example.demo.entity.TestB;
+import com.example.demo.entity.TestC;
 import com.example.demo.entity.User;
 import com.example.demo.entityModel.TaskModel;
+import com.example.demo.repository.TestBRepository;
+import com.example.demo.repository.TestCRepository;
 import com.example.demo.util.ConstantUtil;
 import com.example.demo.util.DatabaseUtil;
 import org.activiti.engine.ProcessEngine;
@@ -214,6 +219,24 @@ public class DemoshiroApplicationTests {
 			}
 		}
 		System.out.println("ip----"+ip);
+	}
+
+	@Autowired
+	private TestBRepository testBRepository;
+	@Autowired
+	private TestCRepository testCRepository;
+
+	@Test
+	public void testB(){
+		TestC testC = new TestC();
+
+		TestC testC1 = testCRepository.findById(6).get();
+		testC.setId(6);
+		testC.setName("的w话1");
+		testC.setCreateTime(testC1.getCreateTime());
+//		testB.setParentId("2222");
+		testCRepository.save(testC);
+//		testBRepository.delete(testB);
 	}
 
 }

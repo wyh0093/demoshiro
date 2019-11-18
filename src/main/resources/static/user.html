@@ -42,7 +42,8 @@
         </div>
         <!--<shiro:hasPermission name="role:query">-->
         <select class="select" id="statusId" style="margin-left: 15px">
-            <option value="0" selected>在职</option>
+            <option value="" selected>全部</option>
+            <option value="0">在职</option>
             <option value="1">离职</option>
         </select>
             <button shiro:hasPermission ="user:query" style="margin-left: 30px" class="tabe_btn" onclick="query(null)">查询</button>
@@ -143,8 +144,16 @@
                     html+="<tr>";
                     html+="<td>"+(i+1)+"</td>";
                     html+="<td>"+content[i].cName+"</td>";
-                    html+="<td>"+content[i].departmentName+"</td>";
-                    html+="<td>"+content[i].statusCName+"</td>";
+                    var departmentName = "";
+                    if(content[i].departmentName!=null){
+                        departmentName = content[i].departmentName;
+                    }
+                    html+="<td>"+departmentName+"</td>";
+                    var statusCName = "";
+                    if(content[i].statusCName!=null){
+                        statusCName = content[i].statusCName;
+                    }
+                    html+="<td>"+statusCName+"</td>";
                     html+="<td>";
                     html+=operate[i];
                     html+="</td>";

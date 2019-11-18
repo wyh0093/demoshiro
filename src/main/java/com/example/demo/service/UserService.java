@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.entityModel.UserModel;
+import com.example.demo.util.PageInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public interface UserService {
     List<User> findAllByPage(Pageable pageable, String keyword);
 
 
-    List<UserModel> findAll(Pageable pageable,String keyword,Integer status,boolean flag);
+    PageInfo<User> findAll(Pageable pageable, String keyword, Integer status, boolean flag);
 
 
     User findManagerByDepart(Integer id);

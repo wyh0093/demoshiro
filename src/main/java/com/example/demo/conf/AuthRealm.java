@@ -50,6 +50,8 @@ public class AuthRealm extends AuthorizingRealm {
 
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addStringPermissions(permissions);//将权限放入shiro中.
+//        SecurityUtils.getSubject().getSession().setAttribute("user",user);
+//        SecurityUtils.getSubject().getSession().setAttribute("permossionStr",permissions);
         return info;
 
     }
@@ -72,15 +74,6 @@ public class AuthRealm extends AuthorizingRealm {
         if(user2!=null){
             return new SimpleAuthenticationInfo(username, password,getName());
         }
-        /*if(!"admin".equals(username)){
-            throw new UnknownAccountException();
-        }else if(!"123".equals(password)){
-            throw new IncorrectCredentialsException();
-        }
-        if("admin".equals(username) && "123".equals(password)){
-
-            return new SimpleAuthenticationInfo(username, password,getName());
-        }*/
         return null;
     }
 }

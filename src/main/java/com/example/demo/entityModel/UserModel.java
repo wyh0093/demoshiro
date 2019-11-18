@@ -1,5 +1,6 @@
 package com.example.demo.entityModel;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -23,6 +24,14 @@ public class UserModel implements Serializable{
     private String statusCName;
 
     private String departmentName; //部门名称
+
+    private Integer createUserId; //创建用户id
+
+    private Integer lastModifyUserId; //最后修改用户ID
+
+    private String createUserCName; //创建人姓名
+
+    private String  lastModifyUserCName;//最后修改人姓名
 
 
     public Integer getId() {
@@ -87,5 +96,37 @@ public class UserModel implements Serializable{
 
     public void setStatusCName(String statusCName) {
         this.statusCName = statusCName;
+    }
+
+    public Integer getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(Integer createUserId) {
+        this.createUserId = createUserId;
+    }
+
+    public Integer getLastModifyUserId() {
+        return lastModifyUserId;
+    }
+
+    public void setLastModifyUserId(Integer lastModifyUserId) {
+        this.lastModifyUserId = lastModifyUserId;
+    }
+
+    public String getCreateUserCName() {
+        return createUserCName;
+    }
+
+    public void setCreateUserCName(String createUserCName) {
+        this.createUserCName = createUserCName;
+    }
+
+    public String getLastModifyUserCName() {
+        return lastModifyUserCName;
+    }
+
+    public void setLastModifyUserCName(String lastModifyUserCName) {
+        this.lastModifyUserCName = lastModifyUserCName;
     }
 }

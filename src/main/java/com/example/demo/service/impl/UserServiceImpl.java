@@ -12,6 +12,7 @@ import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.util.DatabaseUtil;
+import com.example.demo.util.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -85,30 +87,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserModel> findAll(Pageable pageable,String keyword,Integer id,boolean flag) {
+    public PageInfo<User> findAll(Pageable pageable,String keyword,Integer id,boolean flag) {
 
-        List<User> all = new ArrayList<>();
+        List<User> list = new ArrayList<>();
+        List<User> noPageList = userRepository.findAll(findCriteria(keyword,id),Sort.by(Sort.Direction.ASC, "id"));
+        int count = noPageList.size();
+        int totalPage = 0;
         if(flag){
-            all = userRepository.findAll(findCriteria(keyword,id),pageable).getContent();
+            Page<User> pages = userRepository.findAll(findCriteria(keyword,id),pageable);
+            totalPage =  pages.getTotalPages();
+            list = pages.getContent();
         }else {
-            all = userRepository.findAll(findCriteria(keyword,id),Sort.by(Sort.Direction.ASC, "id"));
+            list = noPageList;
         }
-
-        List<UserModel> userModels = new ArrayList<>();
+        Iterator<User> iterator = list.iterator();
+        while (iterator.hasNext()){
+            iterator.next().setRoles(null);
+        }
+        if(null!=list && !list.isEmpty()){
+            for (User user :list) {
+                if(user.getStatus()!=null)
+                    for(UserStatus userStatus :UserStatus.values()){
+                        if(userStatus.ordinal()==user.getStatus()){
+                            user.setStatusCName(userStatus.getStr());
+                        }
+                    }
+            }
+        }
+        PageInfo<User> pageInfo = new PageInfo<User>(list,count,totalPage);
+       /* List<UserModel> userModels = new ArrayList<>();
         for(User user: all){
             UserModel userModel = new UserModel();
             BeanUtils.copyProperties(user,userModel);
             String status = "";
-            for(UserStatus userStatus :UserStatus.values()){
-                if(user.getStatus()==userStatus.ordinal()){
-                    status = userStatus.getStr();
-                }
-            }
+
             userModel.setStatusCName(status);
             userModels.add(userModel);
-        }
+        }*/
 
-        return userModels;
+        return pageInfo;
     }
 
     /**
@@ -196,7 +213,7 @@ public class UserServiceImpl implements UserService {
                 Predicate status = null;
                 Predicate departmentName = null;
                 Predicate PredicateAll = null;
-                if(statusId!=null){
+                if(!StringUtils.isEmpty(statusId)){
                     status = cr.equal(root.get("status").as(Integer.class),statusId );
                     list.add(cr.and(status));
                 }
