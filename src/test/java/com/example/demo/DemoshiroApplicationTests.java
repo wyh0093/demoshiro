@@ -225,7 +225,6 @@ public class DemoshiroApplicationTests {
 		System.out.println("ip----"+ip);
 	}
 
-<<<<<<< HEAD
 	@Autowired
 	private TestBRepository testBRepository;
 	@Autowired
@@ -244,7 +243,6 @@ public class DemoshiroApplicationTests {
 //		testBRepository.delete(testB);
 	}
 
-=======
 	public void getCurrentTime(){
 
 		//
@@ -252,5 +250,4 @@ public class DemoshiroApplicationTests {
 		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String time = df.format(LocalDateTime.now());
 	}
->>>>>>> refs/remotes/origin/master
 }
