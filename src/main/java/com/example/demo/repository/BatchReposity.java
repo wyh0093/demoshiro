@@ -19,9 +19,8 @@ public class BatchReposity<T> {
     protected EntityManager em;
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void batchInsert(List<T> list){
-        for (int i = 0; i <list.size()   ; i++) {
+        for (int i = 0; i <list.size(); i++) {
             em.persist(list.get(i));
-
             em.merge(list.get(i));
         }
     }

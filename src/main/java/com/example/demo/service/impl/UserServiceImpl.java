@@ -11,6 +11,7 @@ import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import com.example.demo.util.CopyDtoUtil;
 import com.example.demo.util.DatabaseUtil;
 import com.example.demo.util.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -57,11 +58,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(Integer id) {
-
-//        UserModel model = new UserModel();
-//        BeanUtils.copyProperties(,model);
-        User user = userRepository.findUserById(id);
-        return user;
+        return userRepository.findById(id).get();
     }
 
     @Override
@@ -87,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageInfo<User> findAll(Pageable pageable,String keyword,Integer id,boolean flag) {
+    public PageInfo<UserModel> findAll(Pageable pageable,String keyword,Integer id,boolean flag) {
 
         List<User> list = new ArrayList<>();
         List<User> noPageList = userRepository.findAll(findCriteria(keyword,id),Sort.by(Sort.Direction.ASC, "id"));
@@ -100,12 +97,13 @@ public class UserServiceImpl implements UserService {
         }else {
             list = noPageList;
         }
-        Iterator<User> iterator = list.iterator();
-        while (iterator.hasNext()){
-            iterator.next().setRoles(null);
-        }
-        if(null!=list && !list.isEmpty()){
-            for (User user :list) {
+        List<UserModel> userModels = new ArrayList<>();
+        userModels = CopyDtoUtil.copyList(list,UserModel.class);
+
+        if(null!=userModels && !userModels.isEmpty()){
+            for (UserModel user :userModels) {
+                if(user.getDepartmentId()!=null)
+                    user.setDepartmentName(departmentRepository.getOne(user.getDepartmentId()).getName());
                 if(user.getStatus()!=null)
                     for(UserStatus userStatus :UserStatus.values()){
                         if(userStatus.ordinal()==user.getStatus()){
@@ -114,17 +112,7 @@ public class UserServiceImpl implements UserService {
                     }
             }
         }
-        PageInfo<User> pageInfo = new PageInfo<User>(list,count,totalPage);
-       /* List<UserModel> userModels = new ArrayList<>();
-        for(User user: all){
-            UserModel userModel = new UserModel();
-            BeanUtils.copyProperties(user,userModel);
-            String status = "";
-
-            userModel.setStatusCName(status);
-            userModels.add(userModel);
-        }*/
-
+        PageInfo<UserModel> pageInfo = new PageInfo<UserModel>(userModels,count,totalPage);
         return pageInfo;
     }
 

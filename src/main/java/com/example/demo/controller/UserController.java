@@ -75,8 +75,7 @@ public class UserController {
                                       @RequestParam(name = "status",required = false) Integer status){
 
         Pageable Pageable = PageRequest.of(currentPage - 1, size, Sort.by(Sort.Direction.ASC, "id"));
-        PageInfo<User> pageInfo =  userService.findAll(Pageable,keyword,status,true);
-//        int totalCount = userService.findAll(Pageable,keyword,status,false).size();
+        PageInfo<UserModel> pageInfo =  userService.findAll(Pageable,keyword,status,true);
         int totalPage =  (Integer)((pageInfo.getCount()/size)+1);
         Map<String,Object> map = new HashMap<>();
         map.put("content",pageInfo.getList());
@@ -134,15 +133,13 @@ public class UserController {
     public void export(HttpServletResponse response, @RequestParam(name = "keyword",required = false) String keyword,
                        @RequestParam(name = "status",required = false) Integer status){
 
-//        List<UserModel> list = userService.findAll(null,keyword,status,false);
-
-        PageInfo<User> pageInfo = userService.findAll(null,keyword,status,false);
-        List<User> list = pageInfo.getList();
+        PageInfo<UserModel> pageInfo = userService.findAll(null,keyword,status,false);
+        List<UserModel> list = pageInfo.getList();
         ExcelData data = new ExcelData();
 
         List<List<Object>> rows = new ArrayList();
         for(int i = 0, length = list.size();i<length;i++){
-            User user = list.get(i);
+            UserModel user = list.get(i);
             List<Object> row = new ArrayList();
             row.add((i+1));
             row.add(user.getcName());
@@ -176,28 +173,18 @@ public class UserController {
     @ApiOperation(value = "创建用户")
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     @RequiresPermissions("user:add")
-    public String save(UserModel userModel){
+    public String save(UserModel userModel,HttpServletRequest request){
 
-        userModel.setStatus(0);
+        userModel.setStatus(1);
         userModel.setPassword("123");
+        User creator = (User)request.getSession().getAttribute("user");
+        userModel.setCreateUserCName(creator.getcName());
+        userModel.setLastModifyUserCName("::");
         User user = new User();
         BeanUtils.copyProperties(userModel,user);
         User user2 = userService.save(user);
         //存入登录名
-       /* int id= user2.getId();
-        StringBuilder str = new StringBuilder();
-        String username = user2.getcName();
-        str.append(user2.getcName());
-        if(id<10){
-            str.append("00"+user2.getId());
-        }else if(id<100){
-            str.append("0"+user2.getId());
-        }
-        user2.setUserName(str.toString());
-        userService.save(user2);*/
-
         saveUserName(user2);
-
         return "success";
     }
 
@@ -210,6 +197,8 @@ public class UserController {
             str.append("00"+user2.getId());
         }else if(id<100){
             str.append("0"+user2.getId());
+        }else {
+            str.append(user2.getId());
         }
         user2.setUserName(str.toString());
         userService.save(user2);
@@ -218,12 +207,14 @@ public class UserController {
     @ApiOperation(value = "更新用户")
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     @RequiresPermissions("user:update")
-    public String update(UserModel userModel){
+    public String update(UserModel userModel,HttpServletRequest request){
 
         User user = userService.findUserById(userModel.getId());
         user.setcName(userModel.getcName());
-        user.setDepartment(userModel.getDepartment());
+        user.setDepartmentId(userModel.getDepartmentId());
         user.setDepartmentName(userModel.getDepartmentName());
+        User creator = (User)request.getSession().getAttribute("user");
+        user.setLastModifyUserCName(creator.getcName());
         userService.save(user);
         this.saveUserName(user);
         return "success";

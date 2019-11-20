@@ -27,7 +27,7 @@ public interface UserService {
     List<User> findAllByPage(Pageable pageable, String keyword);
 
 
-    PageInfo<User> findAll(Pageable pageable, String keyword, Integer status, boolean flag);
+    PageInfo<UserModel> findAll(Pageable pageable, String keyword, Integer status, boolean flag);
 
 
     User findManagerByDepart(Integer id);

@@ -27,22 +27,23 @@ public class User extends BaseEntity {
 
     private String password;//密码
 
-    private Integer department;//部门id
+    private Integer departmentId;//所在部门id
 
-    private Integer status;//状态  (在职 1、离职 0)
+    private Integer status;//状态  (1:在职 0:离职 )
     @Transient
     private String statusCName; //状态名称
-
-    private String departmentName; //部门名称
-    @CreatedBy
-    private Integer createUserId; //创建用户id
-    @LastModifiedBy
-    private Integer lastModifyUserId; //最后修改用户ID
     @Transient
+    private String departmentName; //所在部门名称
+    @Column(name = "creator")
     private String createUserCName; //创建人姓名
-    @Transient
+    @Column(name = "modifier")
     private String  lastModifyUserCName;//最后修改人姓名
 
+    private String phone; //手机号
+
+    private int jobNumber; //工号
+
+    private String position; //职位
 
     @ManyToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name="user_id",referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
@@ -88,12 +89,12 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public Integer getDepartment() {
-        return department;
+    public Integer getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDepartment(Integer department) {
-        this.department = department;
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
     }
 
     public Integer getStatus() {
@@ -111,22 +112,6 @@ public class User extends BaseEntity {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
-    }
-
-    public Integer getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(Integer createUserId) {
-        this.createUserId = createUserId;
-    }
-
-    public Integer getLastModifyUserId() {
-        return lastModifyUserId;
-    }
-
-    public void setLastModifyUserId(Integer lastModifyUserId) {
-        this.lastModifyUserId = lastModifyUserId;
     }
 
     public String getCreateUserCName() {
@@ -151,5 +136,29 @@ public class User extends BaseEntity {
 
     public void setStatusCName(String statusCName) {
         this.statusCName = statusCName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public int getJobNumber() {
+        return jobNumber;
+    }
+
+    public void setJobNumber(int jobNumber) {
+        this.jobNumber = jobNumber;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

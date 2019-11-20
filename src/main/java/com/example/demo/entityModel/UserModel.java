@@ -17,7 +17,7 @@ public class UserModel implements Serializable{
 
     private String password;//密码
 
-    private Integer department;//部门id
+    private Integer departmentId;//部门id
 
     private Integer status;//状态id  (在职 1、离职 0)
 
@@ -25,13 +25,15 @@ public class UserModel implements Serializable{
 
     private String departmentName; //部门名称
 
-    private Integer createUserId; //创建用户id
-
-    private Integer lastModifyUserId; //最后修改用户ID
-
     private String createUserCName; //创建人姓名
 
     private String  lastModifyUserCName;//最后修改人姓名
+
+    private String phone; //手机号
+
+    private int jobNumber; //工号
+
+    private String position; //职位
 
 
     public Integer getId() {
@@ -66,12 +68,12 @@ public class UserModel implements Serializable{
         this.password = password;
     }
 
-    public Integer getDepartment() {
-        return department;
+    public Integer getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDepartment(Integer department) {
-        this.department = department;
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
     }
 
     public Integer getStatus() {
@@ -98,22 +100,6 @@ public class UserModel implements Serializable{
         this.statusCName = statusCName;
     }
 
-    public Integer getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(Integer createUserId) {
-        this.createUserId = createUserId;
-    }
-
-    public Integer getLastModifyUserId() {
-        return lastModifyUserId;
-    }
-
-    public void setLastModifyUserId(Integer lastModifyUserId) {
-        this.lastModifyUserId = lastModifyUserId;
-    }
-
     public String getCreateUserCName() {
         return createUserCName;
     }
@@ -128,5 +114,29 @@ public class UserModel implements Serializable{
 
     public void setLastModifyUserCName(String lastModifyUserCName) {
         this.lastModifyUserCName = lastModifyUserCName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public int getJobNumber() {
+        return jobNumber;
+    }
+
+    public void setJobNumber(int jobNumber) {
+        this.jobNumber = jobNumber;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

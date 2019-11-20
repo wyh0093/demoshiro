@@ -24,6 +24,9 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,15 +58,18 @@ public class InitDatas {
     /**
      *初始化人员数据
      */
-//    @Bean(name = "initUser")
+    @Bean(name = "initUser")
     public String initUser(){
         String sql = "select count(*) from user";
-        String sql2 = "INSERT INTO user VALUES (1, 'admin', null, null, '123', 0, 'admin');\n" +
+        DateTimeFormatter d = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String date = d.format(LocalDateTime.now());
+        String sql2 = "INSERT INTO user VALUES ('1','"+date+"' , '"+date+"', 'admin', null, null, null, '123', null, 'admin');";
+        /*String sql2 = "INSERT INTO user VALUES (1, 'admin', null, null, '123', 0, 'admin');\n" +
                 "INSERT INTO user VALUES (2, '张三', 1, '开发组', '123', 0, '张三002');\n" +
                 "INSERT INTO user VALUES (3, '李四', 1, '开发组', '123', 0, '李四003');\n" +
                 "INSERT INTO user VALUES (4, '王五', 2, '测试组', '123', 0, '王五004');\n" +
                 "INSERT INTO user VALUES (5, '赵六', 3, '人事部', '123', 0, '赵六005');\n" +
-                "INSERT INTO user VALUES (6, '李白', 3, '人事部', '123', 0, '李白006');";
+                "INSERT INTO user VALUES (6, '李白', 3, '人事部', '123', 0, '李白006');";*/
         String[] sqlArr = sql2.split(";");
         Connection conn = null;
         Statement state = null;
@@ -96,14 +102,15 @@ public class InitDatas {
      * 初始化角色数据
      * @return
      */
-//    @Bean(name = "initRole")
+    @Bean(name = "initRole")
     public String initRole(){
+        DateTimeFormatter d = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String date = d.format(LocalDateTime.now());
         String sql = "select count(*) from role ";
-        String sql2 = "INSERT INTO role VALUES (1, '管理员', '管理员', 'admin');\n" +
-                "INSERT INTO role VALUES (2, '员工', '员工', 'employee');\n" +
-                "INSERT INTO role VALUES (3, '项目经理', '项目经理', 'manager');\n" +
-                "INSERT INTO role VALUES (4, '总经理', '总经理', 'boss');\n" +
-                "INSERT INTO role VALUES (5, '人事部经理', '人事部经理', 'manager');";
+        String sql2 ="INSERT INTO role VALUES ('1', '"+date+"', '"+date+"', '管理员', '管理员', 'admin');\n"+
+                "INSERT INTO role VALUES ('2', '"+date+"','"+date+"', '部门经理', '部门经理', 'manager');\n" +
+                "INSERT INTO role VALUES ('3', '"+date+"', '"+date+"', '总经理', '总经理', 'boss');\n" +
+                "INSERT INTO role VALUES ('4', '"+date+"', '"+date+"', '员工', '员工', 'employee');\n";
         Connection conn = null;
         Statement state = null;
         ResultSet rest = null;
@@ -137,12 +144,7 @@ public class InitDatas {
     @Bean(name = "initUserRole")
     public String initUserRole(){
         String sql = "select count(*) from user_role ";
-        String sql2 = "INSERT INTO user_role VALUES (6, 5);\n" +
-                "INSERT INTO user_role VALUES (2, 2);\n" +
-                "INSERT INTO user_role VALUES (3, 3);\n" +
-                "INSERT INTO user_role VALUES (4, 4);\n" +
-                "INSERT INTO user_role VALUES (5, 2);\n" +
-                "INSERT INTO user_role VALUES (1, 1);";
+        String sql2 = "INSERT INTO user_role VALUES (1, 1);";
         Connection conn = null;
         Statement state = null;
         ResultSet rest = null;

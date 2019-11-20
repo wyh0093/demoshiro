@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  * @author: wyh
  * @create: 2019-11-16 11:07
  **/
-@Repository("testCRepository")
+@Repository
 public interface TestCRepository extends JpaRepository<TestC,Integer>, JpaSpecificationExecutor<TestC> {
 
 

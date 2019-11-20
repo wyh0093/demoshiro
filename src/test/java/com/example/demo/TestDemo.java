@@ -28,7 +28,42 @@ public class TestDemo {
 
 
 
-        String str = test2("Sddd");
+//        String str = test2("Sddd");
+
+
+        /*Testaac test = new Testaac();
+        TestA a1 = new TestA(test);
+        new Thread(a1,"aa").start();
+        new Thread(a1,"bb").start();
+        new Thread(a1,"cc").start();*/
+
+      /*  TestD d = new TestD();
+        new Thread(d,"aa").start();
+        new Thread(d,"bb").start();
+        new Thread(d,"cc").start();*/
+        /*a1.setName("窗口1");
+        TestA a2 = new TestA(test);
+        a2.setName("窗口2");
+        TestA a3 = new TestA(test);
+        a3.setName("窗口3");
+        a1.start();
+        a2.start();
+        a3.start();*/
+
+
+        TestD tr=new TestD();
+        //四个线程对应四个窗口
+        Thread t1=new Thread(tr, "窗口A");
+        Thread t2=new Thread(tr, "窗口B");
+        Thread t3=new Thread(tr, "窗口C");
+        Thread t4=new Thread(tr, "窗口D");
+
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+
+
 
 
     }

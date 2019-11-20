@@ -43,8 +43,8 @@
         <!--<shiro:hasPermission name="role:query">-->
         <select class="select" id="statusId" style="margin-left: 15px">
             <option value="" selected>全部</option>
-            <option value="0">在职</option>
-            <option value="1">离职</option>
+            <option value="1">在职</option>
+            <option value="0">离职</option>
         </select>
             <button shiro:hasPermission ="user:query" style="margin-left: 30px" class="tabe_btn" onclick="query(null)">查询</button>
         <!--</shiro:hasPermission>-->

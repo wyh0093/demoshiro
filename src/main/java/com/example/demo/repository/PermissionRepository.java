@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by qwe on 2019/6/30.
  */
-@Repository("permissionRepository")
+@Repository
 public interface PermissionRepository extends JpaRepository<Permission,Integer>,JpaSpecificationExecutor<Permission> {
 
 

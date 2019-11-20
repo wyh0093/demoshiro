@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by qwe on 2019/6/30.
  */
-@Repository("roleRepository")
+@Repository
 public interface RoleRepository extends JpaRepository<Role,Integer>,JpaSpecificationExecutor<Role> {
 
     Role findRoleById(Integer id);

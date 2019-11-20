@@ -5,6 +5,7 @@ import com.example.demo.entity.TestB;
 import com.example.demo.entity.TestC;
 import com.example.demo.entity.User;
 import com.example.demo.entityModel.TaskModel;
+import com.example.demo.entityModel.TestManyFieldModel;
 import com.example.demo.repository.TestBRepository;
 import com.example.demo.repository.TestCRepository;
 import com.example.demo.util.ConstantUtil;
@@ -26,6 +27,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URISyntaxException;
@@ -102,7 +105,7 @@ public class DemoshiroApplicationTests {
 	}
 
 	@Test
-	public void Deal(){
+	public void deal(){
 		Map<String, Object> variables = new HashMap<String, Object>();
 		String taskid = "22503";
 //		variables.put("flag","true");
@@ -229,6 +232,9 @@ public class DemoshiroApplicationTests {
 	private TestBRepository testBRepository;
 	@Autowired
 	private TestCRepository testCRepository;
+	//注入EntityManager
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Test
 	public void testB(){
@@ -249,5 +255,14 @@ public class DemoshiroApplicationTests {
 //		DateTimeFormat(LocalDateTime.now());
 		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String time = df.format(LocalDateTime.now());
+	}
+	@Test
+		public void getManyTableMag(){
+		//拼sql
+		String sql = "SELECT c.name,b.parent_id from testc c ,test_b b where b.id=c.id";
+		List<Object[]> resultList = entityManager.createNativeQuery(sql).getResultList();
+		//使用注入EntityManager进行查询
+		List<TestManyFieldModel> list = entityManager.createNativeQuery(sql).getResultList();
+		System.out.println(resultList.size());
 	}
 }

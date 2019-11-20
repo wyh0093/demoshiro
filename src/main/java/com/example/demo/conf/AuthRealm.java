@@ -29,6 +29,11 @@ public class AuthRealm extends AuthorizingRealm {
         return false;
     }
 
+    /**
+     * 授权方法
+     * @param principal
+     * @return
+     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principal) {
 
@@ -56,6 +61,12 @@ public class AuthRealm extends AuthorizingRealm {
 
     }
 
+    /**
+     * 登录验证
+     * @param token
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         UsernamePasswordToken utoken = (UsernamePasswordToken)token;//获取用户输入的token

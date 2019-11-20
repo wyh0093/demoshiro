@@ -44,7 +44,7 @@ public class LeaveActivityController {
     private ActivityHistoryService activityHistoryService;
 
     @ApiOperation(value = "开启任务实例")
-    @RequestMapping(value = "",method = RequestMethod.POST)
+    @RequestMapping(value = "/start",method = RequestMethod.POST)
     public void start(@RequestParam(name = "flag") String flag, @RequestParam(name = "size") Integer size,
                       @RequestParam(name = "keyword",required = false) String keyword,
                       @RequestParam(name = "page",required = true) String page,
@@ -72,7 +72,7 @@ public class LeaveActivityController {
         //----------判断如果小于等于3天，提交给项目经理；大于3天，提交给总经理
         if("false".equals(sign)){
             //获取本部门项目经理
-            User user2 = userService.findManagerByDepart(user.getDepartment());
+            User user2 = userService.findManagerByDepart(user.getDepartmentId());
             variables.put("manager",user2.getId());
         }else {
             //获取总经理
@@ -93,7 +93,7 @@ public class LeaveActivityController {
     }
 
     @ApiOperation(value = "处理任务")
-    @RequestMapping(value = "",method = RequestMethod.POST)
+    @RequestMapping(value = "/deal",method = RequestMethod.POST)
     public void deal(@RequestParam(name = "taskId",required = true) String taskId, @RequestParam(name = "executionId",required = true) String executionId,
                       @RequestParam(name = "nodeName",required = true) String nodeName,
                       @RequestParam(name = "dealOpinion",required = true) String dealOpinion,

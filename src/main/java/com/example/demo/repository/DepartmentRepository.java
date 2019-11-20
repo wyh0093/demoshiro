@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by qwe on 2019/7/1.
  */
-@Repository("departmentRepository")
+@Repository
 public interface DepartmentRepository extends JpaRepository<Department,Integer>,JpaSpecificationExecutor<Department> {
 
 

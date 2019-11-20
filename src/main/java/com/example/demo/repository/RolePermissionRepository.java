@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by qwe on 2019/7/14.
  */
-@Repository("rolePermissionRepository")
+@Repository
 public interface RolePermissionRepository extends JpaRepository<RolePermission,Integer>,JpaSpecificationExecutor<RolePermission> {
 
     @Query(value = "delete from RolePermission where role.id = ?1")

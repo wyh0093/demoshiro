@@ -5,7 +5,7 @@ package com.example.demo.enums;
  */
 public enum UserStatus {
 
-    NORMAL("在职"),leave("离职");
+    NORMAL("离职"),leave("在职");
 
     private String str;
 

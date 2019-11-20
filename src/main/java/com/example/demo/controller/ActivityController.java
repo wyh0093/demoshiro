@@ -131,7 +131,7 @@ public class ActivityController {
         System.out.println("第一次执行前，任务名称：" + task.getName());
         User user = (User)request.getSession().getAttribute("user");
         //获取本部门项目经理
-        User user2 = userService.findManagerByDepart(user.getDepartment());
+        User user2 = userService.findManagerByDepart(user.getDepartmentId());
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("manager",user2.getId());
         taskService.complete(task.getId(),variables);
@@ -183,7 +183,7 @@ public class ActivityController {
                     taskService.complete(taskId);
                     workTask.setStatus("办结");
                 }else if("离职流程".equals(workTask.getType())){
-                    User user3 = userService.findManagerByDepart(user.getDepartment());
+                    User user3 = userService.findManagerByDepart(user.getDepartmentId());
                     Map<String, Object> variables3 = new HashMap<String, Object>();
                     variables3.put("personnel",user.getId());
                     taskService.complete(taskId,variables3);

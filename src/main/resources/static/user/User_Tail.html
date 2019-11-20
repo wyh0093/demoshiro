@@ -84,7 +84,7 @@
                 dataType: 'json',
                 success: function(data){
                     $("#Name").val(data.cName);
-                    $("#departId").val(data.department);
+                    $("#departId").val(data.departmentId);
                     $("#departCname").val(data.departmentName);
                     //初始化部门
                     allDepartment();
@@ -140,12 +140,12 @@
         }
         if(parent.operate==1){
             //添加
-            dataParams={cName:cname,department:selectId,departmentName:selectName};
+            dataParams={cName:cname,departmentId:selectId,departmentName:selectName};
             operate = "user/save";
         }else{
             //alert(222);
             //修改
-            dataParams={id:parent.userId,cName:cname,department:selectId,departmentName:selectName};
+            dataParams={id:parent.userId,cName:cname,departmentId:selectId,departmentName:selectName};
             operate = "user/update";
         }
        $.ajax({

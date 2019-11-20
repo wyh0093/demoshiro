@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by qwe on 2019/6/27.
  */
-@Repository("userRepository")
+@Repository
 public interface UserRepository extends JpaRepository<User,Integer>,JpaSpecificationExecutor<User> {
 
     User findUserById(Integer id);
