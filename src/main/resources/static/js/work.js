@@ -4,7 +4,7 @@
 
 var workTitle, Publisher, currentID, workTime, flag = true;
 function Workload() {
-    $(function () {
+    /*$(function () {
         $('#table').bootstrapTable({
             method: "get",
             striped: true,
@@ -71,7 +71,7 @@ function Workload() {
             ]
         });
     });
-    getWorkTableData();
+    getWorkTableData();*/
 }
 function getWorkTableData() {
     if (flag) {
